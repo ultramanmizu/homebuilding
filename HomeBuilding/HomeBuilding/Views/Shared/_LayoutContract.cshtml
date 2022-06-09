@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ศูนย์รับสร้างบ้าน สกลนคร รับเหมาก่อสร้าง ออกแบบ เขียนแบบ ที่ปรึกษาโครงการ งานอสังหาริมทรัพย์ ปรึกษาฟรี โทร 0854454334 0910650090">
+    <meta name="keywords" content="รับสร้างบ้าน, ออกแบบ">
+    <meta name="author" content="">
+
+    <title>ศูนย์รับสร้างบ้าน สกลนคร | ออกแบบ | บริษัท เนเจอร์ เอ็ซเทท จำกัด</title>
+    <link rel="shortcut icon" href="./assets/img/favicon.png">
+
+    @Styles.Render("~/Content/css")
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <header class="wrapper bg-light">
+            <nav class="navbar navbar-expand-lg classic transparent navbar-light">
+                <div class="container flex-lg-row flex-nowrap align-items-center">
+                    <div class="navbar-brand w-100 pt-1 pb-2">
+                        <a href="@Url.Action("index", "Home")">
+                            <img src="~/Content/images/logo/logo-dark.png" srcset="~/Content/images/logo/logo-dark@2x.png 2x" class="w-20" alt="" />
+                        </a>
+                    </div>
+
+                    <div class="navbar-collapse offcanvas offcanvas-nav offcanvas-start">
+                        <div class="offcanvas-header d-lg-none">
+                            <h3 class="text-white fs-28 mb-0">ศูนย์รับสร้างบ้าน</h3>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body ms-lg-auto d-flex flex-column h-100">
+                            <ul class="navbar-nav">
+                                <li>
+                                    <a class="nav-link fs-18" href="@Url.Action("index", "Home")">ค้นหา</a>
+                                </li>
+                            </ul>
+                            <!-- /.navbar-nav -->
+
+                        </div>
+                        <!-- /.offcanvas-body -->
+                    </div>
+                    <!-- /.navbar-collapse -->
+                    <div class="navbar-other ms-lg-4">
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li class="nav-item fs-18 d-none d-md-block">
+                                <a href="@Url.Action("signin", "Home")" class="btn btn-sm btn-primary rounded-pill">ออกจากระบบ</a>
+                            </li>
+                            <li class="nav-item d-lg-none">
+                                <button class="hamburger offcanvas-nav-btn"><span></span></button>
+                            </li>
+                        </ul>
+                        <!-- /.navbar-nav -->
+                    </div>
+                    <!-- /.navbar-other -->
+                </div>
+                <!-- /.container -->
+
+            </nav>
+            <!-- /.navbar -->
+           
+        </header>
+        <!-- /header -->
+        <section class="wrapper">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <hr class="mt-0 mb-0"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+        @RenderBody()
+
+
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="bg-navy text-inverse">
+        <div class="row">
+            <div class="col-12 pt-2 pb-0 text-center fs-15">
+                Copyright &copy;2018-@DateTime.Now.Year <a href="@Url.Action("index", "Home")" style="color: #99cc00 ">NATURE ESTATE CO,.LTD</a> All Rights Reserved.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 pt-0 text-center fs-15">
+                <a href="mailto:info@natureestate.co.th">info@natureestate.co.th</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 pt-0 pb-2 text-center fs-15">373/31 ถ.สกลนคร-กาฬสินธุ์ ต.ธาตุเชิงชุม อ.เมืองสกลนคร จ.สกลนคร 47000</div>
+        </div>
+    </footer>
+
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/plugins.js"></script>
+    <script src="~/Scripts/theme.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

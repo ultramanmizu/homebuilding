@@ -13,6 +13,19 @@ namespace HomeBuilding.Controllers
             return View();
         }
 
+        public ActionResult SignIn() {
+            return View("SignIn");
+        }
+
+        public ActionResult ResetPassword() {
+            return View("ResetPassword");
+        }
+
+        public ActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

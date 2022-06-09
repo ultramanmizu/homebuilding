@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ศูนย์รับสร้างบ้าน สกลนคร รับเหมาก่อสร้าง ออกแบบ เขียนแบบ ที่ปรึกษาโครงการ งานอสังหาริมทรัพย์ ปรึกษาฟรี โทร 0854454334 0910650090">
+    <meta name="keywords" content="รับสร้างบ้าน, ออกแบบ">
+    <meta name="author" content="">
+
+    <title>ศูนย์รับสร้างบ้าน สกลนคร | ออกแบบ | บริษัท เนเจอร์ เอ็ซเทท จำกัด</title>
+    <link rel="shortcut icon" href="./assets/img/favicon.png">
+
+    @Styles.Render("~/Content/css")
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <header class="wrapper" style="background-color: #F5F5F5">
+            <nav class="navbar navbar-expand-lg classic transparent navbar-light">
+                <div class="container flex-lg-row flex-nowrap align-items-center">
+                    <div class="navbar-brand w-50 pt-1 pb-2">
+                        <a href="@Url.Action("index", "Home")">
+                            <img src="~/Content/images/logo/logo-dark.png" srcset="~/Content/images/logo/logo-dark@2x.png 2x" class="w-20" alt="" />
+                        </a>
+                    </div>
+                    <div class="w-100 pt-6">
+                        <p class="fs-38" style="font-family: Sukhumvit-bold;color:black">บันทึกสัญญาจ้างเหมางานก่อสร้าง / ใบเสร็จรับเงิน</p>
+                    </div>
+                </div>
+                <!-- /.container -->
+            </nav>
+            <!-- /.navbar -->
+        </header>
+        <!-- /header -->
+        @RenderBody()
+
+
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="bg-navy text-inverse">
+        <div class="row">
+            <div class="col-12 pt-2 pb-0 text-center fs-15">
+                Copyright &copy;2018-@DateTime.Now.Year <a href="@Url.Action("index", "Home")" style="color: #99cc00 ">NATURE ESTATE CO,.LTD</a> All Rights Reserved.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 pt-0 text-center fs-15">
+                <a href="mailto:info@natureestate.co.th">info@natureestate.co.th</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 pt-0 pb-2 text-center fs-15">373/31 ถ.สกลนคร-กาฬสินธุ์ ต.ธาตุเชิงชุม อ.เมืองสกลนคร จ.สกลนคร 47000</div>
+        </div>
+    </footer>
+
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/plugins.js"></script>
+    <script src="~/Scripts/theme.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

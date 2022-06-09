@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_LayoutReceipt.cshtml";
+}
+
+<section class="wrapper">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 pt-8 text-center">
+                <p class="fs-28">สัญญาจ้างเหมางานก่อสร้าง</p>
+            </div>
+            <div class="col-12 pt-0 fs-14 text-end pe-15">
+                <p class="m-0">หมายเลขสัญญา : 000001</p>
+                <p class="m-0">ทำที่ : บริษัท ABC จำกัด</p>
+                <p class="m-0">วันที่ : 09/06/2022</p>
+            </div>
+        </div>
+        <div class="row pt-4">
+            <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">หนังสือสัญญาฉบับนี้ทำขึ้นระหว่าง</label>
+            <div class="col-3 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+            <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">ทะเบียนนิติบุคคล/บัตรประชาชนเลขที่</label>
+            <div class="col-3 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+        </div>
+        <div class="row pt-2">
+            <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">ที่อยู่</label>
+            <div class="col-5 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+            <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">โทร</label>
+            <div class="col-3 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+        </div>
+        <div class="row pt-4 fs-14">
+            <div class="offset-2 col-10">
+                <p class="m-0 text-dark">ซึ่งต่อไปในหนังสือสัญญาฉบับนี้เรียกว่า "ผู้ว่าจ้าง" ฝ่ายหนึ่งกับ</p>
+            </div>
+        </div>
+        <div class="row pt-4">
+            <div class="offset-1 col-3 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+            <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">ทะเบียนนิติบุคคล/บัตรประชาชนเลขที่</label>
+            <div class="col-3">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+        </div>
+        <div class="row pt-2">
+            <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">ที่อยู่</label>
+            <div class="col-5 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+            <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">โทร</label>
+            <div class="col-3 ">
+                <input type="text" class="form-control form-control-sm" id="">
+            </div>
+        </div>
+        <div class="row pt-4 fs-14">
+            <div class="offset-2 col-10">
+                <p class="m-0 text-dark">ซึ่งต่อไปในหนังสือสัญญาฉบับนี้เรียกว่า "ผู้รับจ้าง" อีกฝ่ายหนึ่ง</p>
+                <p class="m-0 text-dark">โดยทั้งสองฝ่ายได้ตกลงสัญญาจ้างเหมางานก่อสร้างกันโดยมีรายละเอียดงานที่ว่าจ้างดังต่อไปนี้</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 pt-2 ps-15 pe-15">
+                <table class="table table-bordered fs-14 mb-1 text-center">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th scope="col">รายละเอียดงานที่ว่าจ้าง</th>
+                            <th scope="col">หน้างานโครงการ</th>
+                            <th scope="col">มูลค่าสัญญา(บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control" id="" value="ก่อฉาบ"></td>
+                            <td><input type="text" class="form-control" id="" value="คุณเอ"></td>
+                            <td class="align-middle text-red text-end fs-16">89,635.00</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <a href="#" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 pt-2 ps-15 pe-15">
+                <table class="table table-bordered fs-14 mb-1 text-center">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th class="align-middle" scope="col">#</th>
+                            <th class="align-middle" scope="col">รายละเอียดการจ่ายเงิน</th>
+                            <th scope="col">จำนวน<br />(Qty.)</th>
+                            <th scope="col">หน่วย<br />(Unit)</th>
+                            <th scope="col">ราคา/หน่วย<br />(Unit Price)</th>
+                            <th scope="col">รวม<br />(Total)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle"> 1</td>
+                            <td><select class="form-select"><option selected>งานก่อผนัง 1/1</option><option>งานก่อผนัง 2/1</option></select></td>
+                            <td><input type="number" class="form-control" id="" value="300.52"></td>
+                            <td><select class="form-select"><option selected>ตรม.</option></select></td>
+                            <td><input type="number" class="form-control" id="" value="130.00"></td>
+                            <td class="align-middle text-red fs-16 text-end"> 39,067.60</td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle"> 2</td>
+                            <td><select class="form-select"><option selected>งานก่อผนัง 1/1</option><option selected>งานก่อผนัง 2/1</option></select></td>
+                            <td><input type="number" class="form-control" id="" value="300.52"></td>
+                            <td><select class="form-select"><option selected>ตรม.</option></select></td>
+                            <td><input type="number" class="form-control" id="" value="130.00"></td>
+                            <td class="align-middle text-red fs-16 text-end"> 45,567.60</td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle"> 3</td>
+                            <td><select class="form-select"><option selected>ทำความสะอาด</option><option>งานก่อผนัง 2/1</option></select></td>
+                            <td><input type="number" class="form-control" id="" value="1"></td>
+                            <td><select class="form-select"><option selected>เหมา</option></select></td>
+                            <td><input type="number" class="form-control" id="" value="5000.00"></td>
+                            <td class="align-middle text-red fs-16 text-end"> 5,000.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-6"><a href="#" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</a></div>
+                    <div class="col-4 text-end"><p class="m-0 text-dark fs-16">รวมทั้งหมด</p></div>
+                    <div class="col-2 text-end"><p class="m-0 text-red fs-16">89,635.00</p></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 ps-15 pe-15 text-center">
+                <p class="m-0 pt-6 pb-2 fs-26">ตารางการเบิกเงิน</p>
+                <table class="table table-bordered fs-14 mb-1 text-center">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th class="align-middle" scope="col">งวดที่</th>
+                            <th class="align-middle" scope="col">รายละเอียดงาน</th>
+                            <th scope="col">เปอร์เซ็นต์</th>
+                            <th scope="col">จำนวนเงิน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle"> 1</td>
+                            <td><select class="form-select"><option selected>งานก่อ 50%</option><option>งานก่อ 100%</option></select></td>
+                            <td class="align-middle fs-16 text-center"> 25%</td>
+                            <td class="align-middle text-red fs-16 text-center">22,409.00</td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle"> 2</td>
+                            <td><select class="form-select"><option>งานก่อ 50%</option><option selected>งานก่อ 100%</option></select></td>
+                            <td class="align-middle fs-16 text-center"> 25%</td>
+                            <td class="align-middle text-red fs-16 text-center"> 22,409.00</td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">3</td>
+                            <td><select class="form-select"><option selected>งานฉาบ 50%</option><option>งานก่อ 100%</option></select></td>
+                            <td class="align-middle fs-16 text-center"> 25%</td>
+                            <td class="align-middle text-red fs-16 text-center"> 44,817.00</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" class="align-middle fs-16 text-end">รวม</td>
+                            <td class="align-middle fs-16 text-center"> 75%</td>
+                            <td class="align-middle text-red fs-16 text-center"> 89,635.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row text-start">
+                    <div class="col-12"><a href="#" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-end fs-14 pt-8">
+            <div class="col-4 text-center ">
+                <p>ลงชื่อ ..................................................................... (ผู้ว่าจ้าง)<br />นาย สสส สสส</p>
+            </div>
+            <div class="col-4 text-center ">
+                <p>ลงชื่อ ..................................................................... (ผู้รับจ้าง)<br />นาย สมศรี ใจดี</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <hr class="mt-5 mb-1" />
+                <hr class="mt-1 mb-3" />
+                <a href="#" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
+                <a href="#" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">บันทึก</a>
+            </div>
+        </div>
+    </div>
+</section>

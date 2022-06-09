@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_LayoutReceipt.cshtml";
+}
+
+<section class="wrapper">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 pt-8 text-center">
+                <h2>ค้นหาสัญญา/ออกใบเสร็จ</h2>
+                <div class="pt-2 mb-1 row justify-content-center">
+                    <label for="name" class="col-3 col-form-label form-control-sm text-end text-dark">ผู้รับจ้าง:</label>
+                    <div class="col-sm-5 ">
+                        <input type="text" class="form-control form-control-sm" id="name">
+                    </div>
+                </div>
+                <div class="mb-1 row justify-content-md-center">
+                    <label for="detail" class="col-3 col-form-label form-control-sm text-end text-dark">รายละเอียดงานที่ว่าจ้าง:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control form-control-sm" id="detail">
+                    </div>
+                </div>
+                <div class="mb-6 row justify-content-md-center">
+                    <label for="project" class="col-3 col-form-label form-control-sm text-end text-dark">หน้างานโครงการ:</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control form-control-sm" id="project">
+                    </div>
+                </div>
+
+                <a href="#" class="btn btn-sm btn-gradient gradient-6 mb-2 me-1 w-18 fs-16 pt-1 pb-1">ค้นหา</a>
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <hr class="mt-1 mb-3" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 ps-10 pe-10">
+                        <table class="table table-bordered fs-14 ">
+                            <thead style="background-color:#BDCDFF;color:#525DFF">
+                                <tr>
+                                    <th scope="col">หมายเลขสัญญา</th>
+                                    <th scope="col">วันที่บันทึก</th>
+                                    <th scope="col">ชื่อผู้ว่าจ้าง</th>
+                                    <th scope="col">ชื่อรับจ้าง</th>
+                                    <th scope="col">รายละเอียดงานที่ว่าจ้าง</th>
+                                    <th scope="col">หน้างานโครงการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>000001</td>
+                                    <td>27/10/2022</td>
+                                    <td>นาย สสส สสส</td>
+                                    <td>นาง สมศรี ใจดี</td>
+                                    <td>งานปูกระเบื้อง/งานเทพื้น/งานรื้อนั่งร้าน</td>
+                                    <td>บ้านคุณ AAA</td>
+                                </tr>
+                                <tr>
+                                    <td>000002</td>
+                                    <td>30/10/2022</td>
+                                    <td>นาย สสส สสส</td>
+                                    <td>นาง สมศรี ใจดี</td>
+                                    <td>งานปูกระเบื้อง/งานเทพื้น/งานรื้อนั่งร้าน</td>
+                                    <td>บ้านคุณ BBB</td>
+                                </tr>
+                                <tr>
+                                    <td>000003</td>
+                                    <td>01/11/2022</td>
+                                    <td>นาย สสส สสส</td>
+                                    <td>นาง สมศรี ใจดี</td>
+                                    <td>งานปูกระเบื้อง/งานเทพื้น/งานรื้อนั่งร้าน</td>
+                                    <td>บ้านคุณ CCC</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <hr class="mt-16 mb-1" />
+                        <hr class="mt-1 mb-3" />
+                        <a href="@Url.Action("print", "Receipt")" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์สัญญา</a>
+                        <a href="@Url.Action("print", "Receipt")" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์ใบเสร็จ</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -133,6 +133,7 @@
     <Content Include="Content\css\plugins.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\images\icons\delete_remove_icon.svg" />
     <Content Include="Content\images\illustrations\i2.jpg" />
     <Content Include="Content\images\illustrations\i1.jpg" />
     <Content Include="Content\images\illustrations\i18.png" />
@@ -194,6 +195,8 @@
     <Content Include="Views\Receipt\Search.cshtml" />
     <Content Include="Views\Receipt\Print.cshtml" />
     <Content Include="Views\Contract\Create.cshtml" />
+    <Content Include="Views\Shared\_LayoutContract.cshtml" />
+    <Content Include="Views\Receipt\Summary.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

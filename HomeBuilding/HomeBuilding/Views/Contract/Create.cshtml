@@ -80,12 +80,11 @@
                         <tr>
                             <td><input type="text" class="form-control" id="" value="ก่อฉาบ"></td>
                             <td><input type="text" class="form-control" id="" value="คุณเอ"></td>
-                            <td class="align-middle text-red text-end fs-16">89,635.00</td>
+                            <td class="align-middle text-red text-center fs-16 fw-bold">89,635.00</td>
                         </tr>
 
                     </tbody>
                 </table>
-                <a href="#" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</a>
             </div>
         </div>
         <div class="row">
@@ -93,12 +92,13 @@
                 <table class="table table-bordered fs-14 mb-1 text-center">
                     <thead style="background-color:#BDCDFF;color:#525DFF">
                         <tr>
-                            <th class="align-middle" scope="col">#</th>
+                            <th class="align-middle w-10" scope="col">#</th>
                             <th class="align-middle" scope="col">รายละเอียดการจ่ายเงิน</th>
-                            <th scope="col">จำนวน<br />(Qty.)</th>
-                            <th scope="col">หน่วย<br />(Unit)</th>
-                            <th scope="col">ราคา/หน่วย<br />(Unit Price)</th>
-                            <th scope="col">รวม<br />(Total)</th>
+                            <th class="w-18" scope="col">จำนวน<br />(Qty.)</th>
+                            <th class="w-18" scope="col">หน่วย<br />(Unit)</th>
+                            <th class="w-18" scope="col">ราคา/หน่วย<br />(Unit Price)</th>
+                            <th class="w-18" scope="col">รวม<br />(Total)</th>
+                            <th class="bg-gray"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,32 +106,41 @@
                             <td class="align-middle"> 1</td>
                             <td><select class="form-select"><option selected>งานก่อผนัง 1/1</option><option>งานก่อผนัง 2/1</option></select></td>
                             <td><input type="number" class="form-control" id="" value="300.52"></td>
-                            <td><select class="form-select"><option selected>ตรม.</option></select></td>
-                            <td><input type="number" class="form-control" id="" value="130.00"></td>
-                            <td class="align-middle text-red fs-16 text-end"> 39,067.60</td>
+                            <td><select class="form-select text-center"><option selected>ตรม.</option></select></td>
+                            <td><select class="form-select text-center"><option selected>130.00</option><option>150.00</option></select></td>
+                            <td class="align-middle text-red fs-16 text-center"> 39,067.60</td>
+                            <td class="align-middle w-0 text-center bg-gray">
+                                <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ"/></a>
+                            </td>
                         </tr>
                         <tr>
                             <td class="align-middle"> 2</td>
                             <td><select class="form-select"><option selected>งานก่อผนัง 1/1</option><option selected>งานก่อผนัง 2/1</option></select></td>
                             <td><input type="number" class="form-control" id="" value="300.52"></td>
-                            <td><select class="form-select"><option selected>ตรม.</option></select></td>
-                            <td><input type="number" class="form-control" id="" value="130.00"></td>
-                            <td class="align-middle text-red fs-16 text-end"> 45,567.60</td>
+                            <td><select class="form-select text-center"><option selected>ตรม.</option></select></td>
+                            <td><select class="form-select text-center"><option selected>130.00</option><option>150.00</option></select></td>
+                            <td class="align-middle text-red fs-16 text-center"> 45,567.60</td>
+                            <td class="align-middle w-0 text-center bg-gray">
+                                <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ"/></a>
+                            </td>
                         </tr>
                         <tr>
                             <td class="align-middle"> 3</td>
                             <td><select class="form-select"><option selected>ทำความสะอาด</option><option>งานก่อผนัง 2/1</option></select></td>
                             <td><input type="number" class="form-control" id="" value="1"></td>
-                            <td><select class="form-select"><option selected>เหมา</option></select></td>
-                            <td><input type="number" class="form-control" id="" value="5000.00"></td>
-                            <td class="align-middle text-red fs-16 text-end"> 5,000.00</td>
+                            <td><select class="form-select text-center"><option selected>เหมา</option></select></td>
+                            <td><select class="form-select text-center"><option selected>5,000.00</option><option>6,000.00</option></select></td>
+                            <td class="align-middle text-red fs-16 text-center"> 5,000.00</td>
+                            <td class="align-middle w-0 text-center bg-gray">
+                                <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ"/></a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="row">
                     <div class="col-6"><a href="#" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</a></div>
-                    <div class="col-4 text-end"><p class="m-0 text-dark fs-16">รวมทั้งหมด</p></div>
-                    <div class="col-2 text-end"><p class="m-0 text-red fs-16">89,635.00</p></div>
+                    <div class="col-4 text-end"><p class="m-0 text-dark fs-16 fw-bold">รวมทั้งหมด</p></div>
+                    <div class="col-2 pe-6 text-end"><p class="m-0 text-red fs-16 fw-bold">89,635.00</p></div>
                 </div>
 
             </div>
@@ -142,36 +151,48 @@
                 <table class="table table-bordered fs-14 mb-1 text-center">
                     <thead style="background-color:#BDCDFF;color:#525DFF">
                         <tr>
-                            <th class="align-middle" scope="col">งวดที่</th>
+                            <th class="align-middle w-12" scope="col">งวดที่</th>
                             <th class="align-middle" scope="col">รายละเอียดงาน</th>
-                            <th scope="col">เปอร์เซ็นต์</th>
-                            <th scope="col">จำนวนเงิน</th>
+                            <th class="w-18" scope="col">เปอร์เซ็นต์</th>
+                            <th class="w-20" scope="col">จำนวนเงิน</th>
+                            <th class="bg-gray"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="align-middle"> 1</td>
                             <td><select class="form-select"><option selected>งานก่อ 50%</option><option>งานก่อ 100%</option></select></td>
-                            <td class="align-middle fs-16 text-center"> 25%</td>
+                            <td class="align-middle"><input type="text" class="form-control text-center fs-16" id="" value="25%"></td>
                             <td class="align-middle text-red fs-16 text-center">22,409.00</td>
+                            <td class="align-middle w-0 text-center bg-gray">
+                                <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ"/></a>
+                            </td>
                         </tr>
                         <tr>
                             <td class="align-middle"> 2</td>
                             <td><select class="form-select"><option>งานก่อ 50%</option><option selected>งานก่อ 100%</option></select></td>
-                            <td class="align-middle fs-16 text-center"> 25%</td>
+                            <td class="align-middle"><input type="text" class="form-control text-center fs-16" id="" value="25%"></td>
                             <td class="align-middle text-red fs-16 text-center"> 22,409.00</td>
+                            <td class="align-middle w-0 text-center bg-gray">
+                                <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ"/></a>
+                            </td>
                         </tr>
                         <tr>
                             <td class="align-middle">3</td>
                             <td><select class="form-select"><option selected>งานฉาบ 50%</option><option>งานก่อ 100%</option></select></td>
-                            <td class="align-middle fs-16 text-center"> 25%</td>
+                            <td class="align-middle"><input type="text" class="form-control text-center fs-16" id="" value="25%"></td>
                             <td class="align-middle text-red fs-16 text-center"> 44,817.00</td>
+                            <td class="align-middle w-0 text-center bg-gray">
+                                <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ"/></a>
+                            </td>
                         </tr>
 
                         <tr>
-                            <td colspan="2" class="align-middle fs-16 text-end">รวม</td>
-                            <td class="align-middle fs-16 text-center"> 75%</td>
-                            <td class="align-middle text-red fs-16 text-center"> 89,635.00</td>
+                            <td colspan="2" class="align-middle fs-16 text-end fw-bold">รวม</td>
+                            <td class="align-middle fs-16 text-center fw-bold"> 75%</td>
+                            <td class="align-middle text-red fs-16 text-center fw-bold"> 89,635.00</td>
+                            <td class="bg-gray">
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -189,9 +210,16 @@
                 <p>ลงชื่อ ..................................................................... (ผู้รับจ้าง)<br />นาย สมศรี ใจดี</p>
             </div>
         </div>
+        <div class="row justify-content-end fs-14 pt-8">
+            <div class="col-4 text-center ">
+                <p>ลงชื่อ ..................................................................... (ผู้ออกเอกสาร)</p>
+            </div>
+            <div class="col-4 text-center ">
+            </div>
+        </div>
         <div class="row">
             <div class="col-12 text-center">
-                <hr class="mt-5 mb-1" />
+                <hr class="mt-4 mb-1" />
                 <hr class="mt-1 mb-3" />
                 <a href="#" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
                 <a href="#" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">บันทึก</a>

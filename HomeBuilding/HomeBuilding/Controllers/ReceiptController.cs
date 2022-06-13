@@ -24,5 +24,10 @@ namespace HomeBuilding.Controllers
             return View("Print");
         }
 
+        public ActionResult Summary()
+        {
+            return View("Summary");
+        }
+
     }
 }

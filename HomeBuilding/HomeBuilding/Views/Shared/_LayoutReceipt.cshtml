@@ -11,6 +11,7 @@
     <link rel="shortcut icon" href="./assets/img/favicon.png">
 
     @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 </head>
 
 <body>
@@ -35,7 +36,7 @@
                                     <a class="nav-link fs-18" href="@Url.Action("create", "Contract")">สัญญา</a>
                                 </li>
                                 <li>
-                                    <a class="nav-link fs-18" href="@Url.Action("index", "Home")">ค้นหา</a>
+                                    <a class="nav-link fs-18" href="@Url.Action("summary", "Receipt")">ค้นหา</a>
                                 </li>
                             </ul>
                             <!-- /.navbar-nav -->
@@ -61,14 +62,14 @@
 
             </nav>
             <!-- /.navbar -->
-           
+
         </header>
         <!-- /header -->
         <section class="wrapper">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-12">
-                        <hr class="mt-0 mb-0"/>
+                        <hr class="mt-0 mb-0" />
                     </div>
                 </div>
             </div>
@@ -97,6 +98,8 @@
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/plugins.js"></script>
     <script src="~/Scripts/theme.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 

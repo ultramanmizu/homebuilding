@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HomeBuildingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ConstructionContract">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ContractNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ContractDate" Type="datetime" Nullable="false" />
+    <Property Name="MadeAt" Type="nvarchar" MaxLength="1000" />
+    <Property Name="OwnerName" Type="nvarchar" MaxLength="250" />
+    <Property Name="OwnerAddress" Type="nvarchar" MaxLength="1000" />
+    <Property Name="OwnerTel" Type="nvarchar" MaxLength="50" />
+    <Property Name="OwnerEmail" Type="nvarchar" MaxLength="50" />
+    <Property Name="OwnerType" Type="nvarchar" MaxLength="50" />
+    <Property Name="OwnerNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="ContractorName" Type="nvarchar" MaxLength="250" />
+    <Property Name="ContractorAddress" Type="nvarchar" MaxLength="1000" />
+    <Property Name="ContractorTel" Type="nvarchar" MaxLength="50" />
+    <Property Name="ContractorEmail" Type="nvarchar" MaxLength="50" />
+    <Property Name="ContractorLicenseNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="DescriptionOfWork" Type="nvarchar" MaxLength="2000" />
+    <Property Name="WorkSite" Type="nvarchar" MaxLength="1000" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="ContractDescription">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ConstructionContractId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="LineNo" Type="int" Nullable="false" />
+    <Property Name="Detail" Type="nvarchar" MaxLength="1000" />
+    <Property Name="Quantity" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Unit" Type="nvarchar" MaxLength="250" />
+    <Property Name="UnitPrice" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MasterData">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Key" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="Text" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="Value" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="ParentId" Type="uniqueidentifier" />
+    <Property Name="ParentLevel" Type="int" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Material">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Type" Type="nvarchar" MaxLength="250" />
+    <Property Name="Name" Type="nvarchar" MaxLength="250" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="MaterialUnit">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MaterialId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="250" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="250" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="RunningNumber">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Key" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="Prefix" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="StartNumber" Type="int" Nullable="false" />
+    <Property Name="EndNumber" Type="int" Nullable="false" />
+    <Property Name="CurrentNumber" Type="int" Nullable="false" />
+    <Property Name="Digit" Type="int" Nullable="false" />
+    <Property Name="Priority" Type="int" Nullable="false" />
+    <Property Name="IsDefault" Type="bit" Nullable="false" />
+    <Property Name="StartDate" Type="datetime" Nullable="false" />
+    <Property Name="EndDate" Type="datetime" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="UnitPirce">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="UnitId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="250" />
+    <Property Name="Price" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="StartDate" Type="datetime" Nullable="false" />
+    <Property Name="EndDate" Type="datetime" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="50" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="250" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="250" />
+    <Property Name="FullName" Type="nvarchar" MaxLength="250" />
+    <Property Name="RoleId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="250" />
+    <Property Name="Email" Type="nvarchar" MaxLength="250" />
+    <Property Name="LastLogIn" Type="datetime" />
+    <Property Name="LastChangePassword" Type="datetime" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Withdraw">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ConstructionContractId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ReceiptNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="WithdrawDate" Type="datetime" />
+    <Property Name="LineNo" Type="int" Nullable="false" />
+    <Property Name="Detail" Type="nvarchar" MaxLength="1000" />
+    <Property Name="Percent" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
+  <EntityContainer Name="HomeBuildingModelStoreContainer">
+    <EntitySet Name="ConstructionContract" EntityType="Self.ConstructionContract" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ContractDescription" EntityType="Self.ContractDescription" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MasterData" EntityType="Self.MasterData" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Material" EntityType="Self.Material" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MaterialUnit" EntityType="Self.MaterialUnit" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RunningNumber" EntityType="Self.RunningNumber" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UnitPirce" EntityType="Self.UnitPirce" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Withdraw" EntityType="Self.Withdraw" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

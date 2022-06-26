@@ -11,11 +11,13 @@ namespace HomeBuilding.Controllers
         // GET: Contract
         public ActionResult Index()
         {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
             return View();
         }
 
         public ActionResult Create()
         {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
             return View();
         }
     }

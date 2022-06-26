@@ -9,17 +9,22 @@
             <div class="col-lg-7 col-xl-6 col-xxl-5 mx-auto ">
                 <div class="card">
                     <div class="card-body p-11 text-center">
-                        <form class="text-start mb-3">
+                        @if (ViewBag.Message != null) { 
+                        <div class="alert alert-danger alert-icon fs-14 text-start" role="alert">
+                            <i class="uil uil-times-circle"></i>@ViewBag.Message
+                        </div>
+                        }
+                        <form class="text-start mb-3" id="form-login" method="get" action="@Url.Action("login", "User")">
                             <div class="form-floating mb-4">
-                                <input type="email" class="form-control" placeholder="ชื่อผู้ใช้" id="loginUsername">
+                                <input type="text" name="username" class="form-control" placeholder="ชื่อผู้ใช้" id="login-username">
                                 <label for="loginUsername">ชื่อผู้ใช้</label>
                             </div>
                             <div class="form-floating password-field mb-4">
-                                <input type="password" class="form-control" placeholder="รหัสผ่าน" id="loginPassword">
-                                <span class="password-toggle"><i class="uil uil-eye"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="รหัสผ่าน" id="login-password">
+                                @*<span class="password-toggle"><i class="uil uil-eye"></i></span>*@
                                 <label for="loginPassword">รหัสผ่าน</label>
                             </div>
-                            <a class="btn btn-success btn-login w-100 mb-2 fs-24" href="@Url.Action("search", "Receipt")">เข้าใช้งาน</a>
+                            <button class="btn btn-success btn-login w-100 mb-2 fs-24" id="login-submit" type="submit">เข้าใช้งาน</button>
                         </form>
                         <!-- /form -->
 
@@ -30,8 +35,8 @@
                         </div>
                         <!--/.social -->
                     </div>
-                        <!--/.card-body -->
-                    </div>
+                    <!--/.card-body -->
+                </div>
                 <!--/.card -->
             </div>
             <!-- /column -->

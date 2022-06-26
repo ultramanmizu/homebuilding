@@ -14,6 +14,7 @@ namespace HomeBuilding.Controllers
         }
 
         public ActionResult SignIn() {
+            ViewBag.Message = TempData["shortMessage"]?.ToString();
             return View("SignIn");
         }
 

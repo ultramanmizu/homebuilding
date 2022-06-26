@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string userFullname = Session["UserProfile.FullName"].ToString();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -38,6 +42,9 @@
                                 <li>
                                     <a class="nav-link fs-18" href="@Url.Action("summary", "Receipt")">สรุป</a>
                                 </li>
+                                <li>
+                                    <a class="nav-link fs-18">@userFullname</a>
+                                </li>
                             </ul>
                             <!-- /.navbar-nav -->
 
@@ -48,7 +55,7 @@
                     <div class="navbar-other ms-lg-4">
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
                             <li class="nav-item fs-18 d-none d-md-block">
-                                <a href="@Url.Action("signin", "Home")" class="btn btn-sm btn-primary rounded-pill">ออกจากระบบ</a>
+                                <a href="@Url.Action("logout", "User")" class="btn btn-sm btn-primary rounded-pill">ออกจากระบบ</a>
                             </li>
                             <li class="nav-item d-lg-none">
                                 <button class="hamburger offcanvas-nav-btn"><span></span></button>

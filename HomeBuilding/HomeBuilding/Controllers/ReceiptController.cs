@@ -16,16 +16,19 @@ namespace HomeBuilding.Controllers
 
         public ActionResult Search()
         {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
             return View("Search");
         }
 
         public ActionResult Print()
         {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
             return View("Print");
         }
 
         public ActionResult Summary()
         {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
             return View("Summary");
         }
 

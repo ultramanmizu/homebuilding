@@ -12,6 +12,8 @@ namespace HomeBuilding
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class HomeBuildingEntities : DbContext
     {
@@ -32,8 +34,25 @@ namespace HomeBuilding
         public virtual DbSet<MaterialUnit> MaterialUnits { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RunningNumber> RunningNumbers { get; set; }
-        public virtual DbSet<UnitPirce> UnitPirces { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Withdraw> Withdraws { get; set; }
+        public virtual DbSet<UnitPrice> UnitPrices { get; set; }
+    
+        public virtual ObjectResult<string> usp_get_document_number(string key, string prefix, Nullable<int> digit)
+        {
+            var keyParameter = key != null ?
+                new ObjectParameter("Key", key) :
+                new ObjectParameter("Key", typeof(string));
+    
+            var prefixParameter = prefix != null ?
+                new ObjectParameter("Prefix", prefix) :
+                new ObjectParameter("Prefix", typeof(string));
+    
+            var digitParameter = digit.HasValue ?
+                new ObjectParameter("Digit", digit) :
+                new ObjectParameter("Digit", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("usp_get_document_number", keyParameter, prefixParameter, digitParameter);
+        }
     }
 }

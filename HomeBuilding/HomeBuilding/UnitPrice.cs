@@ -12,7 +12,7 @@ namespace HomeBuilding
     using System;
     using System.Collections.Generic;
     
-    public partial class UnitPirce
+    public partial class UnitPrice
     {
         public System.Guid Id { get; set; }
         public System.Guid UnitId { get; set; }

@@ -77,6 +77,7 @@ C:\Users\warink\source\repos\HomeBuilding\HomeBuilding\HomeBuilding\obj\Debug\Ho
 C:\Users\warink\source\repos\HomeBuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBuilding.csproj.CopyComplete
 C:\Users\warink\source\repos\HomeBuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBuilding.dll
 C:\Users\warink\source\repos\HomeBuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBuilding.pdb
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Text.Encoding.CodePages.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\HomeBuilding.dll.config
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\HomeBuilding.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\HomeBuilding.pdb
@@ -117,7 +118,6 @@ D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Security.Cryptography.Encoding.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Security.Cryptography.Primitives.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Security.Cryptography.X509Certificates.dll
-D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Text.Encoding.CodePages.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Threading.Tasks.Extensions.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.ValueTuple.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\roslyn\System.Xml.ReaderWriter.dll

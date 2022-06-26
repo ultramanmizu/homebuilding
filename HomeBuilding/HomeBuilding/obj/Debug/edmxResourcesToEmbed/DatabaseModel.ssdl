@@ -155,7 +155,7 @@
     <Property Name="DeletedById" Type="uniqueidentifier" />
     <Property Name="DeletedDate" Type="datetime" />
   </EntityType>
-  <EntityType Name="UnitPirce">
+  <EntityType Name="UnitPrice">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -226,6 +226,11 @@
     <Property Name="DeletedById" Type="uniqueidentifier" />
     <Property Name="DeletedDate" Type="datetime" />
   </EntityType>
+  <Function Name="usp_get_document_number" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Key" Type="nvarchar" Mode="In" />
+    <Parameter Name="Prefix" Type="nvarchar" Mode="In" />
+    <Parameter Name="Digit" Type="int" Mode="In" />
+  </Function>
   <EntityContainer Name="HomeBuildingModelStoreContainer">
     <EntitySet Name="ConstructionContract" EntityType="Self.ConstructionContract" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ContractDescription" EntityType="Self.ContractDescription" Schema="dbo" store:Type="Tables" />
@@ -234,7 +239,7 @@
     <EntitySet Name="MaterialUnit" EntityType="Self.MaterialUnit" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="RunningNumber" EntityType="Self.RunningNumber" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="UnitPirce" EntityType="Self.UnitPirce" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UnitPrice" EntityType="Self.UnitPrice" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Withdraw" EntityType="Self.Withdraw" Schema="dbo" store:Type="Tables" />
   </EntityContainer>

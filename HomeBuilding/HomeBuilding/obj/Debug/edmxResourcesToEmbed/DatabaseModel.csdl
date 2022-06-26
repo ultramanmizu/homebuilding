@@ -155,27 +155,6 @@
     <Property Name="DeletedById" Type="Guid" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
   </EntityType>
-  <EntityType Name="UnitPirce">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Guid" Nullable="false" />
-    <Property Name="UnitId" Type="Guid" Nullable="false" />
-    <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="Price" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
-    <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="EndDate" Type="DateTime" Precision="3" />
-    <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="Sequence" Type="Int32" Nullable="false" />
-    <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedById" Type="Guid" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedById" Type="Guid" />
-    <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="DeletedById" Type="Guid" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-  </EntityType>
   <EntityType Name="User">
     <Key>
       <PropertyRef Name="Id" />
@@ -234,8 +213,37 @@
     <EntitySet Name="MaterialUnits" EntityType="Self.MaterialUnit" />
     <EntitySet Name="Roles" EntityType="Self.Role" />
     <EntitySet Name="RunningNumbers" EntityType="Self.RunningNumber" />
-    <EntitySet Name="UnitPirces" EntityType="Self.UnitPirce" />
     <EntitySet Name="Users" EntityType="Self.User" />
     <EntitySet Name="Withdraws" EntityType="Self.Withdraw" />
+    <FunctionImport Name="usp_get_document_number" ReturnType="Collection(String)">
+      <Parameter Name="Key" Mode="In" Type="String" />
+      <Parameter Name="Prefix" Mode="In" Type="String" />
+      <Parameter Name="Digit" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <EntitySet Name="UnitPrices" EntityType="HomeBuildingModel.UnitPrice" />
   </EntityContainer>
+  <ComplexType Name="GetDocumentNumber_Result">
+    <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
+  </ComplexType>
+  <EntityType Name="UnitPrice">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="UnitId" Type="Guid" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Price" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+    <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Sequence" Type="Int32" Nullable="false" />
+    <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedById" Type="Guid" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedById" Type="Guid" />
+    <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DeletedById" Type="Guid" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+  </EntityType>
 </Schema>

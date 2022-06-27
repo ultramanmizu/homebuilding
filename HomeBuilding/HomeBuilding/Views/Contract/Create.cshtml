@@ -1,17 +1,14 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Search";
     Layout = "~/Views/Shared/_LayoutContract.cshtml";
 
     string userFullname = Session["UserProfile.FullName"].ToString();
 }
-
 @section scripts {
     <script>
         const array_description = [];
+        const array_withdraw = [];
         $(document).ready(function () {
-
-
             $("#txt-owner-name").blur(function () {
                 $("#label-ower-name").html($(this).val());
             });
@@ -21,7 +18,8 @@
             });
 
             $("#btn-add-description").click(function () {
-                var count = parseInt($("#count-description").val());
+                $(this).prop('disabled', true);
+                let count = parseInt($("#count-description").val());
                 count++;
                 array_description.push(count);
 
@@ -29,14 +27,34 @@
                 else { $("#tbody-description-0").hide(); }
                 $("#count-description").val(count);
 
-                var tbodyId = "#tbody-description-" + count;
+                let tbodyId = "#tbody-description-" + count;
                 $.get("@Url.Action("GetDescriptionForm", "Contract")", { i: count, line_no: array_description.length }, function (html) {
                     $(tbodyId).html(html);
+                    $("#btn-add-description").prop('disabled', false);
+                });
+                return false;
+            });
+
+            $("#btn-add-withdraw").click(function () {
+                $(this).prop('disabled', true);
+                let count = parseInt($("#count-withdraw").val());
+                count++;
+                array_withdraw.push(count);
+
+                if (array_withdraw.length == 0) { $("#tbody-withdraw-0").show(); }
+                else { $("#tbody-withdraw-0").hide(); }
+                $("#count-withdraw").val(count);
+
+                let tbodyId = "#tbody-withdraw-" + count;
+                $.get("@Url.Action("GetWithdrawForm", "Contract")", { i: count, line_no: array_withdraw.length }, function (html) {
+                    $(tbodyId).html(html);
+                    $("#btn-add-withdraw").prop('disabled', false);
                 });
                 return false;
             });
 
         });
+
         function RemoveDescription(i) {
             if (confirm("ยืนยันการลบ")) {
                 const index = array_description.indexOf(parseInt(i));
@@ -53,25 +71,67 @@
             }
         }
 
+        function RemoveWithdraw(i) {
+            if (confirm("ยืนยันการลบ")) {
+                const index = array_withdraw.indexOf(parseInt(i));
+                if (index > -1) {
+                    array_withdraw.splice(index, 1);
+                }
+                if (array_withdraw.length == 0) { $("#tbody-withdraw-0").show(); }
+                else { $("#tbody-withdraw-0").hide(); }
+
+                var tbodyId = "#tbody-withdraw-" + i;
+                $(tbodyId).html("");
+                LineNoWithdraw();
+                SumTotalWithdraw();
+            }
+        }
+
         function SumDescription(i) {
-            var quantity = parseFloat($("#txt-quantity-" + i).val());
-            var price = parseFloat($("#select-unitprice-" + i).val());
-            var sum = parseFloat(quantity * price);
+            const quantity = parseFloat($("#txt-quantity-" + i).val());
+            const price = parseFloat($("#select-unitprice-" + i).val());
+            const sum = parseFloat(quantity * price);
 
             $("#lable-description-total-" + i).html(currency(sum));
-            $("#description-total-" + i).val(sum);
-
             SumTotalDescription();
         }
 
         function SumTotalDescription() {
-            var total = parseFloat(0.00);
+            let total = parseFloat(0.00);
             array_description.forEach(element => {
                 total += parseFloat(parseFloat($("#txt-quantity-" + element).val()) * parseFloat($("#select-unitprice-" + element).val()));
             });
 
             $("#label-total-description,#label-contract-summary").html(currency(total));
             $("#total-description,#contract-summary").val(total);
+
+            SumTotalWithdraw();
+        }
+
+        function SumWithdraw(i) {
+            
+            SumTotalWithdraw();
+        }
+
+        function SumTotalWithdraw() {
+            const total = parseFloat($("#contract-summary").val());
+            let sumPercent = 0.00;
+            let sumTotal = 0.00;
+
+            array_withdraw.forEach(element => {
+                const percent = parseFloat($("#txt-withdraw-percent-" + element).val().replace("%", ""));
+                sumPercent += percent;
+                const calPercent = parseFloat(total * (percent / 100));
+                sumTotal += calPercent;
+                $("#lable-withdraw-total-" + element).html(currency(calPercent));
+                $("#withdraw-total-" + element).val(calPercent);
+            });
+
+            $("#label-withdraw-sum-percent").html(sumPercent.toString()+"%");
+            $("#withdraw-sum-percent").val(sumPercent);
+
+            $("#label-withdraw-sum-total").html(currency(sumTotal));
+            $("#withdraw-sum-total").val(sumTotal);
         }
 
         function LineNoDescription() {
@@ -82,8 +142,16 @@
             });
         }
 
+        function LineNoWithdraw() {
+            let i = 1;
+            array_withdraw.forEach(element => {
+                $("#withdraw-line-" + element).html(i);
+                i++;
+            });
+        }
+
         function MaterialChange(i) {
-            var value = $("#select-material-" + i).val();
+            const value = $("#select-material-" + i).val();
             $.get("@Url.Action("GetUnitForm", "Contract")", { i: i, materialId: value }, function (options) {
                 $("#select-unit-" + i).html(options);
                 $("#txt-quantity-" + i).val(0);
@@ -94,18 +162,16 @@
         }
 
         function UnitChange(i) {
-            var value = $("#select-unit-" + i).val();
+            const value = $("#select-unit-" + i).val();
             $.get("@Url.Action("GetUnitPriceForm", "Contract")", { i: i, unitId: value }, function (options) {
                 $("#select-unitprice-" + i).html(options);
                 SumDescription(i);
             });
-            
         }
 
         function currency(number) {
             return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
         };
-  
 
     </script>
 }
@@ -204,7 +270,7 @@
                                 <th class="w-19" scope="col">หน่วย<br />(Unit)</th>
                                 <th class="w-19" scope="col">ราคา/หน่วย<br />(Unit Price)</th>
                                 <th class="w-19" scope="col">รวม<br />(Total)</th>
-                                <th class="bg-gray w-5"></th>
+                                <th class="bg-gray w-7"></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-description-0">
@@ -214,19 +280,18 @@
                         {
                             <tbody id="tbody-description-@i"></tbody>
                         }
-
                     </table>
                     <div class="row">
                         <div class="col-6"><button id="btn-add-description" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</button></div>
                         <div class="col-4 text-end"><p class="m-0 text-dark fs-16 fw-bold">รวมทั้งหมด</p></div>
                         <div class="col-2 pe-6 text-end"><p class="m-0 text-red fs-16 fw-bold" id="label-total-description">0.00</p><input type="hidden" id="total-description" value="0" /></div>
                     </div>
-
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 ps-15 pe-15 text-center">
                     <p class="m-0 pt-6 pb-2 fs-26">ตารางการเบิกเงิน</p>
+                    <input type="hidden" id="count-withdraw" value="0" />
                     <table class="table table-bordered fs-14 mb-1 text-center">
                         <thead style="background-color:#BDCDFF;color:#525DFF">
                             <tr>
@@ -234,53 +299,31 @@
                                 <th class="align-middle" scope="col">รายละเอียดงาน</th>
                                 <th class="w-18" scope="col">เปอร์เซ็นต์</th>
                                 <th class="w-20" scope="col">จำนวนเงิน</th>
-                                <th class="bg-gray"></th>
+                                <th class="bg-gray w-7"></th>
                             </tr>
                         </thead>
+                        <tbody id="tbody-withdraw-0">
+                            <tr><td colspan="5" class="text-center">ไม่มีรายการ</td></tr>
+                        </tbody>
+                        @for (int i = 1; i <= 50; i++)
+                        {
+                            <tbody id="tbody-withdraw-@i"></tbody>
+                        }                           
                         <tbody>
                             <tr>
-                                <td class="align-middle"> 1</td>
-                                <td><select class="form-select"><option selected>งานก่อ 50%</option><option>งานก่อ 100%</option></select></td>
-                                <td class="align-middle"><input type="text" class="form-control text-center fs-16" id="" value="25%"></td>
-                                <td class="align-middle text-red fs-16 text-center">22,409.00</td>
-                                <td class="align-middle w-0 text-center bg-gray">
-                                    <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ" /></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle"> 2</td>
-                                <td><select class="form-select"><option>งานก่อ 50%</option><option selected>งานก่อ 100%</option></select></td>
-                                <td class="align-middle"><input type="text" class="form-control text-center fs-16" id="" value="25%"></td>
-                                <td class="align-middle text-red fs-16 text-center"> 22,409.00</td>
-                                <td class="align-middle w-0 text-center bg-gray">
-                                    <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ" /></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle">3</td>
-                                <td><select class="form-select"><option selected>งานฉาบ 50%</option><option>งานก่อ 100%</option></select></td>
-                                <td class="align-middle"><input type="text" class="form-control text-center fs-16" id="" value="25%"></td>
-                                <td class="align-middle text-red fs-16 text-center"> 44,817.00</td>
-                                <td class="align-middle w-0 text-center bg-gray">
-                                    <a href="#"><img src="~/Content/images/icons/delete_remove_icon.svg" width="16" title="ลบ" /></a>
-                                </td>
-                            </tr>
-
-                            <tr>
                                 <td colspan="2" class="align-middle fs-16 text-end fw-bold">รวม</td>
-                                <td class="align-middle fs-16 text-center fw-bold"> 75%</td>
-                                <td class="align-middle text-red fs-16 text-center fw-bold"> 89,635.00</td>
+                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent"/></td>
+                                <td class="align-middle text-red fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-total">0.00</p><input type="hidden" id="withdraw-sum-total" /></td>
                                 <td class="bg-gray">
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="row text-start">
-                        <div class="col-12"><a href="#" class="btn btn-sm btn-success p-1 w-16 fs-13">+ เพิ่มรายการ</a></div>
+                        <div class="col-12"><button class="btn btn-sm btn-success p-1 w-16 fs-13" id="btn-add-withdraw">+ เพิ่มรายการ</button></div>
                     </div>
                 </div>
             </div>
-
             <div class="row justify-content-end fs-14 pt-8">
                 <div class="col-4 text-center ">
                     <p class="p-0 m-0">ลงชื่อ ............................................................................. (ผู้ว่าจ้าง)</p><div id="label-ower-name"></div>

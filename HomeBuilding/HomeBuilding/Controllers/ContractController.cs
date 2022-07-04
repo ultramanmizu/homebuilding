@@ -1,0 +1,366 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Threading.Tasks;
+using System.Data.Linq.SqlClient;
+using System.Globalization;
+
+namespace HomeBuilding.Controllers
+{
+    public class ContractController : Controller
+    {
+        private HomeBuildingEntities db = new HomeBuildingEntities();
+        // GET: Contract
+        public ActionResult Index()
+        {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
+            return View();
+        }
+
+        public ActionResult Create()
+        {
+            if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
+            string prefix = string.Concat("C-", DateTime.Now.Year.ToString(), "-");
+            var docNumber = db.usp_get_document_number("Contract", prefix, 6).FirstOrDefault();
+            ViewBag.ContractNumber = docNumber.ToString();
+            ViewBag.MadeAt = "บริษัท เนเจอร์ เอ็ซเทท จำกัด";
+            ViewBag.CreateDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+            return View();
+        }
+        public HtmlString GetDescriptionForm(int i, int line_no)
+        {
+            //get Material/Labor
+            List<Material> materials = db.Materials.Where(x => x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+
+            string html = "<tr id=\"tr-description-" + i + "\"><td class=\"align-middle\"><div id=\"description-line-" + i + "\">" + line_no + "</div></td><td><select class=\"form-select\" id=\"select-material-" + i + "\" name=\"material-" + i + "\" onchange=\"javascript:MaterialChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือกข้อมูล</option>";
+            foreach (Material material in materials)
+            {
+                html += "<option value=\"" + material.Id + "\">" + material.Name + "</option>";
+            }
+            html += "</select></td>" +
+                "<td><input type=\"number\" min=\"0\" class=\"form-control\" id=\"txt-quantity-" + i + "\" name=\"quantity-" + i + "\" value=\"0\" onblur=\"javascript:SumDescription('" + i + "')\"></td>" +
+                "<td><select class=\"form-select text-start\" id=\"select-unit-" + i + "\" name=\"unit-" + i + "\" onchange=\"javascript:UnitChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือก</option></select></td>" +
+                "<td><select class=\"form-select text-start\"id=\"select-unitprice-" + i + "\" name=\"unitprice-" + i + "\" onchange=\"javascript:SumDescription('" + i + "')\"><option value=\"0\" selected>กรุณาเลือก</option></select></td>" +
+                "<td class=\"align-middle text-red fs-16 text-center\"><p class=\"p-0 m-0\" id=\"lable-description-total-" + i + "\">0.00</p><input type=\"hidden\" id=\"description-total-" + i + "\" name=\"description-total-" + i + "\" value=\"0\"></td>" +
+                "<td class=\"align-middle w-0 text-center bg-gray\">" +
+                    "<a href=\"javascript:RemoveDescription('" + i + "')\"><img src=\"../../Content/images/icons/delete_remove_icon.svg\" width=\"16\" title=\"ลบ\"/></a> " +
+                "</td></tr>";
+            return new HtmlString(html);
+        }
+
+        public HtmlString GetUnitForm(int i, string materialId)
+        {
+            string html = "<option value=\"\" selected>กรุณาเลือก</option>";
+            if (materialId != "")
+            {
+                //get Unit
+                List<MaterialUnit> units = db.MaterialUnits.Where(x => x.MaterialId == new Guid(materialId) && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+                foreach (MaterialUnit unit in units)
+                {
+                    html += "<option value=\"" + unit.Id + "\">" + unit.Name + "</option>";
+                }
+            }
+            return new HtmlString(html);
+        }
+
+        public HtmlString GetUnitPriceForm(int i, string unitId)
+        {
+            string html = "<option value=\"0\" selected>กรุณาเลือก</option>";
+            if (unitId != "")
+            {
+                //get Unit Price
+                List<UnitPrice> prices = db.UnitPrices.Where(x => x.UnitId == new Guid(unitId) && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+                foreach (UnitPrice price in prices)
+                {
+                    html += "<option value=\"" + price.Price + "\">" + price.Name + "</option>";
+                }
+            }
+            return new HtmlString(html);
+        }
+
+        public HtmlString GetWithdrawForm(int i, int line_no)
+        {
+            //get Options
+            List<MasterData> masterDatas = db.MasterDatas.Where(x => x.Key.Contains("withdraw") && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+
+            string html = "<tr id=\"tr-withdraw-" + i + "\"><td class=\"align-middle\"><div id=\"withdraw-line-" + i + "\">" + line_no + "</div></td><td><div id=\"div-select-withdraw-" + i + "\"><select class=\"form-select\" id=\"select-withdraw-" + i + "\" name=\"withdraw-" + i + "\" onchange=\"javascript:WithdrawChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือกข้อมูล</option>";
+            foreach (MasterData option in masterDatas)
+            {
+                html += "<option value=\"" + option.Value + "\">" + option.Text + "</option>";
+            }
+            html += "<option value=\"other\">อื่นๆ ระบุ</option></select></div><div id=\"div-txt-withdraw-" + i + "\" style=\"display: none;\"><input type=\"text\" class=\"form-control\" id=\"txt-withdraw-" + i + "\" name=\"withdraw-other-" + i + "\" value=\"\"></div></td>" +
+                    "<td class=\"align-middle\"><input type=\"text\" class=\"form-control text-center fs-16\" id=\"txt-withdraw-percent-" + i + "\" name=\"withdraw-percent-" + i + "\" value=\"0\" onblur=\"javascript:SumWithdraw('" + i + "')\"></td>" +
+                    "<td class=\"align-middle text-red fs-16 text-center\"><p class=\"p-0 m-0\" id=\"lable-withdraw-total-" + i + "\">0.00</p><input type=\"hidden\" id=\"withdraw-total-" + i + "\" name=\"withdraw-total-" + i + "\" value=\"0\"></td>" +
+                    "<td class=\"align-middle w-0 text-center bg-gray\">" +
+                        "<a href=\"javascript:RemoveWithdraw('" + i + "')\"><img src=\"../../Content/images/icons/delete_remove_icon.svg\" width=\"16\" title=\"ลบ\"/></a> " +
+                    "</td></tr>";
+            return new HtmlString(html);
+        }
+
+        [HttpPost]
+        public ActionResult PostCreate(FormCollection form)
+        {
+            //contract header
+            ConstructionContract contract = new ConstructionContract()
+            {
+                Id = Guid.NewGuid(),
+                ContractNumber = form["ContractNumber"],
+                ContractDate = DateTime.Now.Date,
+                MadeAt = form["MadeAt"],
+                OwnerName = form["OwnerName"],
+                OwnerNumber = form["OwnerNumber"],
+                OwnerAddress = form["OwnerAddress"],
+                OwnerTel = form["OwnerTel"],
+                ContractorName = form["ContractorName"],
+                ContractorLicenseNumber = form["ContractorLicenseNumber"],
+                ContractorAddress = form["ContractorAddress"],
+                ContractorTel = form["ContractorTel"],
+                DescriptionOfWork = form["DescriptionOfWork"],
+                WorkSite = form["WorkSite"],
+                ContractValue = Convert.ToDecimal(form["ContractValue"]),
+                CreatedById = new Guid(form["CreatedById"]),
+                CreatedDate = DateTime.Now,
+                UpdatedById = new Guid(form["CreatedById"]),
+                UpdatedDate = DateTime.Now,
+                IsEnabled = true
+            };
+            db.ConstructionContracts.Add(contract);
+            //contract description
+            string[] arrayDescription = form["array_description"].Split(',');
+            int line = 1;
+            foreach (string desIndex in arrayDescription)
+            {
+                Material material = db.Materials.Find(new Guid(form["material-" + desIndex]));
+                MaterialUnit unit = db.MaterialUnits.Find(new Guid(form["unit-" + desIndex]));
+                ContractDescription description = new ContractDescription()
+                {
+                    Id = Guid.NewGuid(),
+                    ConstructionContractId = contract.Id,
+                    LineNo = line,
+                    Sequence = line,
+                    Detail = material.Name,
+                    Quantity = Convert.ToDecimal(form["quantity-" + desIndex]),
+                    Unit = unit.Name,
+                    UnitPrice = Convert.ToDecimal(form["unitprice-" + desIndex]),
+                    Total = Convert.ToDecimal(form["description-total-" + desIndex]),
+                    CreatedById = new Guid(form["CreatedById"]),
+                    CreatedDate = DateTime.Now,
+                    UpdatedById = new Guid(form["CreatedById"]),
+                    UpdatedDate = DateTime.Now,
+                    IsEnabled = true
+                };
+                db.ContractDescriptions.Add(description);
+                line++;
+            }
+            //withdram
+            if(form["array_withdraw"] != "") {
+                //create receipt
+                Receipt receipt = new Receipt() {
+                    Id = Guid.NewGuid(),
+                    ConstructionContractId = contract.Id,
+                    ReceiptDate = DateTime.Now.Date,
+                    ReceiptNumber = db.usp_get_document_number("Receipt", string.Concat("R-", DateTime.Now.Year.ToString(), "-"), 6).FirstOrDefault(),
+                    CreatedById = new Guid(form["CreatedById"]),
+                    CreatedDate = DateTime.Now,
+                    UpdatedById = new Guid(form["CreatedById"]),
+                    UpdatedDate = DateTime.Now,
+                    IsEnabled = true,
+                    Total = 0,
+                    Round = 1
+                };
+                
+
+                string[] arrayWithdraw = form["array_withdraw"].Split(',');
+                line = 1;
+                MasterData masterData = db.MasterDatas.Where(x => x.Key == "withdraw" && x.IsEnabled == true && x.IsDeleted == false).OrderByDescending(o => o.Sequence).FirstOrDefault();
+                int masterSeq = masterData.Sequence;
+
+                foreach (string wdIndex in arrayWithdraw)
+                {
+                    string detail;
+                    if (form["withdraw-" + wdIndex] == "other")
+                    {
+                        detail = form["withdraw-other-" + wdIndex];
+                        //add to master data
+                        masterSeq++;
+                        db.MasterDatas.Add(new MasterData()
+                        {
+                            Id = Guid.NewGuid(),
+                            Key = "withdraw",
+                            Text = detail,
+                            Value = detail,
+                            Sequence = masterSeq,
+                            CreatedById = new Guid(form["CreatedById"]),
+                            CreatedDate = DateTime.Now,
+                            UpdatedById = new Guid(form["CreatedById"]),
+                            UpdatedDate = DateTime.Now,
+                            IsEnabled = true
+                        });
+                    }
+                    else
+                    {
+                        detail = form["withdraw-" + wdIndex];
+                    }
+                    ReceiptDetail withdraw = new ReceiptDetail()
+                    {
+                        Id = Guid.NewGuid(),
+                        ReceiptId = receipt.Id,
+                        LineNo = line,
+                        Sequence = line,
+                        Detail = detail,
+                        Percent = Convert.ToDecimal(form["withdraw-percent-" + wdIndex]),
+                        Total = Convert.ToDecimal(form["withdraw-total-" + wdIndex]),
+                        CreatedById = new Guid(form["CreatedById"]),
+                        CreatedDate = DateTime.Now,
+                        UpdatedById = new Guid(form["CreatedById"]),
+                        UpdatedDate = DateTime.Now,
+                        IsEnabled = true
+                    };
+                    db.ReceiptDetails.Add(withdraw);
+                    line++;
+                    receipt.Total += withdraw.Total;
+                }
+                db.Receipts.Add(receipt);
+            }
+            db.SaveChanges();
+
+            TempData["OwnerName"] = contract.OwnerName;
+            TempData["ContractDate"] = contract.ContractDate.ToString("dd/MM/yyyy");
+            return RedirectToAction("Summary", "Receipt");
+        }
+
+        [HttpPost]
+        public HtmlString ListContractSearch(FormCollection form)
+        {
+            string name = form["name"];
+            string description = form["description"];
+            string worksite = form["worksite"];
+
+            string html = "";
+            if (name == "" && description == "" && worksite == "")
+            {
+                html = "<tr><td colspan=\"6\" class=\"text-center\">ไม่มีรายการ</td></tr>";
+            }
+            else
+            {
+                var contracts = (from c in db.ConstructionContracts
+                                 where c.ContractorName.Contains(name) &&
+                                       c.DescriptionOfWork.Contains(description) &&
+                                       c.WorkSite.Contains(worksite) &&
+                                       c.IsEnabled == true && c.IsDeleted == false
+                                 orderby c.CreatedDate ascending
+                                 select new
+                                 {
+                                     Id = c.Id,
+                                     ContractNumber = c.ContractNumber,
+                                     ContractDate = c.ContractDate,
+                                     OwnerName = c.OwnerName,
+                                     ContractorName = c.ContractorName,
+                                     DescriptionOfWork = c.DescriptionOfWork,
+                                     WorkSite = c.WorkSite
+                                 }
+                                 ).ToList();
+
+                if (contracts.Count > 0)
+                {
+                    foreach (var item in contracts)
+                    {
+                        html += string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>",
+                            item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite);
+                    }
+                }
+                else
+                {
+                    html = " <tr><td colspan=\"6\" class=\"text-center\">ไม่มีรายการ</td></tr>";
+                }
+            }
+            return new HtmlString(html);
+        }
+
+        [HttpPost]
+        public HtmlString ListContractSummarySearch(FormCollection form)
+        {
+            string name = form["name"];
+            string startDate = form["startdate"];
+            string endDate = form["enddate"];
+            decimal sumTotal = 0;
+
+            string html = "";
+            if (name == "" && startDate == "" && endDate == "")
+            {
+                html = "<tr><td colspan=\"9\" class=\"text-center\">ไม่มีรายการ</td></tr>";
+            }
+            else
+            {
+                DateTime stDate = startDate == "" ? DateTime.MinValue : DateTime.ParseExact(startDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                DateTime enDate = endDate == "" ? DateTime.MaxValue : DateTime.ParseExact(endDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                var contracts = (from c in db.ConstructionContracts
+                                 where  c.OwnerName.Contains(name) &&
+                                        c.ContractDate >= stDate && c.ContractDate <= enDate &&
+                                        c.IsEnabled == true && c.IsDeleted == false
+                                 orderby c.CreatedDate ascending
+                                 select new
+                                 {
+                                     Id = c.Id,
+                                     ContractNumber = c.ContractNumber,
+                                     ContractDate = c.ContractDate,
+                                     OwnerName = c.OwnerName,
+                                     ContractorName = c.ContractorName,
+                                     DescriptionOfWork = c.DescriptionOfWork,
+                                     WorkSite = c.WorkSite
+                                 }
+                                 ).ToList();
+                if (contracts.Count > 0)
+                {
+                    foreach (var item in contracts)
+                    {
+                        int line = 1;
+                        var receipts = (from r in db.Receipts
+                                        where r.ConstructionContractId == item.Id &&
+                                                r.IsEnabled == true && r.IsDeleted == false
+                                        orderby r.Round ascending
+                                        select new
+                                        {
+                                            Id = r.Id,
+                                            Round = r.Round,
+                                            ReceiptNumber = r.ReceiptNumber,
+                                            Total = r.Total
+                                        }
+                                        ).ToList();
+                        if (receipts.Count > 0)
+                        {
+                            foreach (var receipt in receipts)
+                            {
+                                sumTotal += receipt.Total;
+                                if (line == 1)
+                                {
+                                    html += string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td><a href=\"{9}\">{7}</a></td><td>{8}</td></tr>",
+                                    item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite , receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total) , String.Format("{0}?id={1}", Url.Action("print", "Receipt"), receipt.Id));
+                                }
+                                else {
+                                    html += string.Format("<tr><td colspan=\"6\"></td><td>{0}</td><td><a href=\"{3}\">{1}</a></td><td>{2}</td></tr>",
+                                    receipt.Round, receipt.ReceiptNumber, receipt.Total, String.Format("{0}?id={1}", Url.Action("print", "Receipt"), receipt.Id));
+                                }
+                                line++;
+                            }
+                        }
+                        else {
+                            html += string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td colspan=\"3\"></td></tr>",
+                                item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite);
+                        }  
+                    }
+                }
+                else
+                {
+                    html = "<tr><td colspan=\"9\" class=\"text-center\">ไม่มีรายการ</td></tr>";
+                }   
+            }
+            html += String.Format("<input type=\"hidden\" name=\"sumtotal\" id=\"sum-total\" value=\"{0}\" />", sumTotal);
+            return new HtmlString(html);
+        }
+    }
+} 

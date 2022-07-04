@@ -13,6 +13,24 @@ namespace HomeBuilding.Controllers
             return View();
         }
 
+        public ActionResult SignIn() {
+            ViewBag.Message = TempData["shortMessage"]?.ToString();
+            return View("SignIn");
+        }
+
+        public ActionResult ResetPassword() {
+            return View("ResetPassword");
+        }
+
+        public ActionResult ChangePassword() { 
+            return View("ChangePassword");
+        }
+
+        public ActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_LayoutReceipt.cshtml";
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#from, #to").datepicker({
+                format: 'dd/mm/yyyy'
+            });
+
+            $("#btn-search").click(function () {
+                $("#btn-search").prop('disabled', true);
+                $.post("@Url.Action("ListContractSummarySearch", "Contract")", $("#form-search").serialize(), function (html) {
+                    $("#tbody-search").html(html);
+                    $("#btn-search").prop('disabled', false);
+                    $("#label-sum-total").html("รวมรายการที่เบิกทั้งหมด: " + currency($("#sum-total").val()) + " บาท");
+                });
+                return false;
+            });
+
+            if ($("#name").val() != "") {
+                $("#btn-search").click();
+            }
+        });
+        function currency(number) {
+            return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
+        };
+    </script>
+}
+
+<section class="wrapper">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 pt-8 text-center">
+                <h2>สรุปรายการออกใบเสร็จรับเงิน</h2>
+                <form id="form-search">
+                    <div class="pt-2 mb-1 row justify-content-center">
+                        <label for="name" class="col-2 col-form-label form-control-sm text-end text-dark">ผู้ว่าจ้าง:</label>
+                        <div class="col-sm-5 ">
+                            <input type="text" class="form-control form-control-sm" id="name" name="name" value="@ViewBag.OwnerName">
+                        </div>
+                    </div>
+                    <div class="mb-1 row justify-content-md-center">
+                        <label for="detail" class="col-2 col-form-label form-control-sm text-end text-dark">วันที่บันทึก:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="from" name="startdate" value="@ViewBag.ContractDate">
+                        </div>
+                        <label for="detail" class="col-1 col-form-label form-control-sm text-end text-dark">ถึงวันที่:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="to" name="enddate" value="@ViewBag.ContractDate">
+                        </div>
+                    </div>
+                    <div class="row align-items-center pt-4 pb-4">
+                        <div class="col-12">
+                            <button id="btn-search" class="btn btn-sm btn-gradient gradient-6 w-18 fs-16 pt-1 pb-1">ค้นหา</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <hr class="mt-1 mb-3" />
+                    </div>
+                </div>
+                <div class="row ps-12 pe-4 fs-16 m-0 pt-4 pb-1 text-dark">
+                    <p class="col-6 m-0 text-start">
+                        ผู้ว่าจ้าง นาย สสสส สส
+                    </p>
+                    <p class="col-3 m-0">
+                        ประจำวันที่ 20/10/2022
+                    </p>
+                    <p class="col-3 m-0">
+                        ถึงวันที่ 20/10/2022
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col-12 ps-10 pe-10">
+                        <table class="table table-bordered fs-14 ">
+                            <thead style="background-color:#BDCDFF;color:#525DFF">
+                                <tr>
+                                    <th scope="col">หมายเลขสัญญา</th>
+                                    <th scope="col">วันที่บันทึก</th>
+                                    <th scope="col">ชื่อผู้ว่าจ้าง</th>
+                                    <th scope="col">ชื่อผู้รับจ้าง</th>
+                                    <th scope="col">รายละเอียดงานที่ว่าจ้าง</th>
+                                    <th scope="col">หน้างานโครงการ</th>
+                                    <th scope="col">รายการที่รอบนี้</th>
+                                    <th scope="col">หมายเลขใบเสร็จ</th>
+                                    <th scope="col">จำนวน(บาท)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-search">
+                                <tr>
+                                    <td colspan="9" class="text-center">ไม่มีรายการ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-12 pt-0 pe-0 text-end text-dark">
+                            <p class="fs-16 m-0" id="label-sum-total">รวมรายการที่เบิกทั้งหมด: 0.00 บาท</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-end">
+                    <div class="col-12">
+                        <hr class="mt-10 mb-1" />
+                        <hr class="mt-1 mb-3" />
+                        <a href="@Url.Action("print", "Receipt")" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

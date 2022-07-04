@@ -1,0 +1,138 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutReceipt.cshtml";
+
+    Receipt receipt = ViewBag.Receipt;
+    ConstructionContract contract = ViewBag.Contract;
+    List<Receipt> receiptOthers = ViewBag.ReceiptOthers;
+
+}
+
+<section class="wrapper">
+    <div class="container">
+        <div class="row pt-4 text-start">
+            <div class="col-12 ps-10 pe-10">
+                <p class="fs-14 m-0">(@contract.OwnerName)</p>
+                <p class="fs-14 m-0">ที่อยู่: @contract.OwnerAddress</p>
+                <p class="fs-14 m-0">เบอร์โทร: @contract.OwnerTel</p>
+                <p class="fs-40 mt-3">ใบเสร็จรับเงิน</p>
+            </div>
+            <p class="col-3 fs-14 m-0 ps-10">เลขที่: @receipt.ReceiptNumber</p>
+            <p class="col-9 fs-14 m-0 pe-10">วันที่: @(((DateTime)receipt.ReceiptDate).ToString("dd/MM/yyyy"))</p>
+            <div class="col-12 ps-10 pe-10">
+                <table class="table table-bordered fs-14 m-0">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th scope="col">ผู้ว่าจ้าง</th>
+                            <th scope="col">ผู้รับจ้าง</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@contract.OwnerName</td>
+                            <td>@contract.ContractorName</td>
+                        </tr>
+                        <tr>
+                            <td>ที่อยู่: @contract.OwnerAddress</td>
+                            <td>ที่อยู่: @contract.ContractorAddress</td>
+                        </tr>
+                        <tr>
+                            <td>เบอร์โทร: @contract.OwnerTel</td>
+                            <td>เบอร์โทร: @contract.ContractorTel</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered fs-14 mt-1 mb-0">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th scope="col">รายละเอียดงานที่ว่าจ้าง</th>
+                            <th scope="col">หน้างานโครงการ</th>
+                            <th scope="col">มูลค่าสัญญา</th>
+                            <th scope="col">หมายเลขสัญญา</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@contract.DescriptionOfWork</td>
+                            <td>@contract.WorkSite</td>
+                            <td>@(String.Format("{0:n}", contract.ContractValue)) บาท</td>
+                            <td>@contract.ContractNumber</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered fs-14 mt-1 mb-0">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th class="w-25" scope="col">รายการที่รอบนี้</th>
+                            <th class="w-25" scope="col">วันที่</th>
+                            <th class="w-25" scope="col">หมายเลขใบเสร็จ</th>
+                            <th class="w-25" scope="col">จำนวนเงิน(บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@receipt.Round</td>
+                            <td>@(((DateTime)receipt.ReceiptDate).ToString("dd/MM/yyyy"))</td>
+                            <td>@receipt.ReceiptNumber</td>
+                            <td>@(String.Format("{0:n}", receipt.Total))</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered fs-14 mt-1 mb-0">
+                    <thead style="background-color:#BDCDFF;color:#525DFF">
+                        <tr>
+                            <th class="w-25" scope="col">ประวัติการเบิก</th>
+                            <th class="w-25" scope="col">วันที่</th>
+                            <th class="w-25" scope="col">หมายเลขใบเสร็จ</th>
+                            <th class="w-25" scope="col">จำนวนเงิน(บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (receiptOthers.Count > 0)
+                        {
+                            foreach (var item in receiptOthers.OrderBy(o=>o.Round))
+                            {
+                                <tr>
+                                    <td>@item.Round</td>
+                                    <td>@(((DateTime)item.ReceiptDate).ToString("dd/MM/yyyy"))</td>
+                                    <td>@item.ReceiptNumber</td>
+                                    <td>@(String.Format("{0:n}", item.Total))</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center">ไม่มีรายการ</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 pt-2 pe-8 text-end">
+            <p class="fs-14 m-0">รวมรายการที่เบิกทั้งหมด: @(String.Format("{0:n}", ViewBag.WithdrawTotal)) บาท</p>
+            <p class="fs-14 m-0">ยอดคงเหลือ: @(String.Format("{0:n}", ViewBag.Remain)) บาท</p>
+        </div>
+        <div class="row justify-content-end fs-14 pt-8">
+            <div class="col-4 text-center ">
+                <p>ลงชื่อ ..................................................................... (ผู้ว่าจ้าง)<br />@contract.OwnerName</p>
+            </div>
+            <div class="col-4 text-center ">
+                <p>ลงชื่อ ..................................................................... (ผู้รับจ้าง)<br />@contract.ContractorName</p>
+            </div>
+        </div>
+        <div class="row justify-content-end fs-14 pt-8">
+            <div class="col-4 text-center ">
+                <p>ลงชื่อ ..................................................................... (ผู้ออกเอกสาร)<br />@ViewBag.Creator</p>
+            </div>
+            <div class="col-4 text-center"></div>
+        </div>
+        <div class="row text-end">
+            <div class="col-12 pe-10">
+                <hr class="mt-4 mb-1" />
+                <hr class="mt-1 mb-3" />
+                <a href="@Url.Action("ExportExcel","Receipt")?id=@receipt.Id" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
+            </div>
+        </div>
+    </div>
+</section>

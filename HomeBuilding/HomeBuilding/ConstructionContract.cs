@@ -41,5 +41,6 @@ namespace HomeBuilding
         public System.DateTime UpdatedDate { get; set; }
         public Nullable<System.Guid> DeletedById { get; set; }
         public Nullable<System.DateTime> DeletedDate { get; set; }
+        public Nullable<decimal> ContractValue { get; set; }
     }
 }

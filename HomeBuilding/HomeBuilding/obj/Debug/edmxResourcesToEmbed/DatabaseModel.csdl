@@ -31,6 +31,7 @@
     <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="DeletedById" Type="Guid" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <Property Name="ContractValue" Type="Decimal" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="ContractDescription">
     <Key>
@@ -182,29 +183,6 @@
     <Property Name="DeletedById" Type="Guid" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
   </EntityType>
-  <EntityType Name="Withdraw">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Guid" Nullable="false" />
-    <Property Name="ConstructionContractId" Type="Guid" Nullable="false" />
-    <Property Name="ReceiptNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="WithdrawDate" Type="DateTime" Precision="3" />
-    <Property Name="LineNo" Type="Int32" Nullable="false" />
-    <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-    <Property Name="Percent" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
-    <Property Name="Total" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
-    <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="Sequence" Type="Int32" Nullable="false" />
-    <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
-    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-    <Property Name="CreatedById" Type="Guid" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedById" Type="Guid" />
-    <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="DeletedById" Type="Guid" />
-    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-  </EntityType>
   <EntityContainer Name="HomeBuildingEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="ConstructionContracts" EntityType="Self.ConstructionContract" />
     <EntitySet Name="ContractDescriptions" EntityType="Self.ContractDescription" />
@@ -214,13 +192,14 @@
     <EntitySet Name="Roles" EntityType="Self.Role" />
     <EntitySet Name="RunningNumbers" EntityType="Self.RunningNumber" />
     <EntitySet Name="Users" EntityType="Self.User" />
-    <EntitySet Name="Withdraws" EntityType="Self.Withdraw" />
     <FunctionImport Name="usp_get_document_number" ReturnType="Collection(String)">
       <Parameter Name="Key" Mode="In" Type="String" />
       <Parameter Name="Prefix" Mode="In" Type="String" />
       <Parameter Name="Digit" Mode="In" Type="Int32" />
     </FunctionImport>
     <EntitySet Name="UnitPrices" EntityType="HomeBuildingModel.UnitPrice" />
+    <EntitySet Name="Receipts" EntityType="HomeBuildingModel.Receipt" />
+    <EntitySet Name="ReceiptDetails" EntityType="HomeBuildingModel.ReceiptDetail" />
   </EntityContainer>
   <ComplexType Name="GetDocumentNumber_Result">
     <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
@@ -235,6 +214,48 @@
     <Property Name="Price" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
     <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Sequence" Type="Int32" Nullable="false" />
+    <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedById" Type="Guid" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedById" Type="Guid" />
+    <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DeletedById" Type="Guid" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Receipt">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="ConstructionContractId" Type="Guid" Nullable="false" />
+    <Property Name="ReceiptNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ReceiptDate" Type="DateTime" Precision="3" />
+    <Property Name="Total" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+    <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Sequence" Type="Int32" Nullable="false" />
+    <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedById" Type="Guid" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedById" Type="Guid" />
+    <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DeletedById" Type="Guid" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+    <Property Name="Round" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ReceiptDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="ReceiptId" Type="Guid" Nullable="false" />
+    <Property Name="LineNo" Type="Int32" Nullable="false" />
+    <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="Percent" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+    <Property Name="Total" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
     <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
     <Property Name="Sequence" Type="Int32" Nullable="false" />
     <Property Name="IsEnabled" Type="Boolean" Nullable="false" />

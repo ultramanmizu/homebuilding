@@ -53,6 +53,17 @@
                 return false;
             });
 
+            $("#btn-save").click(function () {
+                var isValidate = validator();
+                if (isValidate) { 
+                    if (confirm("ยืนยันการบันทึก")) {
+                        $("#array_description").val(array_description);
+                        $("#array_withdraw").val(array_withdraw);
+                        $("#form-create").submit();
+                    }
+                }
+                return false;
+            });
         });
 
         function RemoveDescription(i) {
@@ -93,6 +104,7 @@
             const sum = parseFloat(quantity * price);
 
             $("#lable-description-total-" + i).html(currency(sum));
+            $("#description-total-" + i).val(sum);
             SumTotalDescription();
         }
 
@@ -109,7 +121,7 @@
         }
 
         function SumWithdraw(i) {
-            
+
             SumTotalWithdraw();
         }
 
@@ -161,6 +173,13 @@
             });
         }
 
+        function WithdrawChange(i) {
+            if ($("#select-withdraw-" + i).val() == "other") {
+                $("#div-select-withdraw-" + i).hide();
+                $("#div-txt-withdraw-" + i).show();
+            }
+        }
+
         function UnitChange(i) {
             const value = $("#select-unit-" + i).val();
             $.get("@Url.Action("GetUnitPriceForm", "Contract")", { i: i, unitId: value }, function (options) {
@@ -173,39 +192,110 @@
             return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
         };
 
+        function validator() {
+            var isValidate = true;
+
+            if ($("#txt-owner-name").val() === "") { isValidate = false; $("#txt-owner-name").addClass("border-danger"); }
+            else { $("#txt-owner-name").removeClass("border-danger"); }
+
+            if ($("#txt-owner-number").val() === "") { isValidate = false; $("#txt-owner-number").addClass("border-danger"); }
+            else { $("#txt-owner-number").removeClass("border-danger"); }
+
+            if ($("#txt-owner-address").val() === "") { isValidate = false; $("#txt-owner-address").addClass("border-danger"); }
+            else { $("#txt-owner-address").removeClass("border-danger"); }
+
+            if ($("#txt-owner-tel").val() === "") { isValidate = false; $("#txt-owner-tel").addClass("border-danger"); }
+            else { $("#txt-owner-tel").removeClass("border-danger"); }
+
+            if ($("#txt-contractor-name").val() === "") { isValidate = false; $("#txt-contractor-name").addClass("border-danger"); }
+            else { $("#txt-contractor-name").removeClass("border-danger"); }
+
+            if ($("#txt-contractor-license").val() === "") { isValidate = false; $("#txt-contractor-license").addClass("border-danger"); }
+            else { $("#txt-contractor-license").removeClass("border-danger"); }
+
+            if ($("#txt-contractor-address").val() === "") { isValidate = false; $("#txt-contractor-address").addClass("border-danger"); }
+            else { $("#txt-contractor-address").removeClass("border-danger"); }
+
+            if ($("#txt-contractor-tel").val() === "") { isValidate = false; $("#txt-contractor-tel").addClass("border-danger"); }
+            else { $("#txt-contractor-tel").removeClass("border-danger"); }
+
+            if ($("#txt-contract-description").val() === "") { isValidate = false; $("#txt-contract-description").addClass("border-danger"); }
+            else { $("#txt-contract-description").removeClass("border-danger"); }
+
+            if ($("#txt-contract-worksite").val() === "") { isValidate = false; $("#txt-contract-worksite").addClass("border-danger"); }
+            else { $("#txt-contract-worksite").removeClass("border-danger"); }
+
+            if (array_description.length == 0) {
+                isValidate = false;
+                alert("กรุณาเพิ่มรายละเอียดการจ่ายเงิน");
+            }
+
+            array_description.forEach(element => {
+                if ($("#select-material-" + element).val() === "") { isValidate = false; $("#select-material-" + element).addClass("border-danger"); }
+                else { $("#select-material-" + element).removeClass("border-danger"); }
+
+                if ($("#txt-quantity-" + element).val() === "0") { isValidate = false; $("#txt-quantity-" + element).addClass("border-danger"); }
+                else { $("#txt-quantity-" + element).removeClass("border-danger"); }
+
+                if ($("#select-unit-" + element).val() === "") { isValidate = false; $("#select-unit-" + element).addClass("border-danger"); }
+                else { $("#select-unit-" + element).removeClass("border-danger"); }
+
+                if ($("#select-unitprice-" + element).val() === "0") { isValidate = false; $("#select-unitprice-" + element).addClass("border-danger"); }
+                else { $("#select-unitprice-" + element).removeClass("border-danger"); }
+            });
+
+            array_withdraw.forEach(element => {
+                if ($("#select-withdraw-" + element).val() === "") { isValidate = false; $("#select-withdraw-" + element).addClass("border-danger"); }
+                else { $("#select-withdraw-" + element).removeClass("border-danger"); }
+
+                if ($("#select-withdraw-" + element).val() === "other" && $("#txt-withdraw-" + element).val() === "") { isValidate = false; $("#txt-withdraw-" + element).addClass("border-danger"); }
+                else { $("#txt-withdraw-" + element).removeClass("border-danger"); }
+                
+                if($("#txt-withdraw-percent-" + element).val() === "0") { isValidate = false; $("#txt-withdraw-percent-" + element).addClass("border-danger"); }
+                else { $("#txt-withdraw-percent-" + element).removeClass("border-danger"); } 
+            });
+
+            if (!isValidate) {
+                $('html, body').animate({ scrollTop: 0 }, 'fast');
+            }
+            return isValidate;
+        }
     </script>
 }
 <section class="wrapper">
-    <form>
+    <form id="form-create" method="post" action="@Url.Action("PostCreate", "Contract")">
+        <input type="hidden" id="array_description" name="array_description" />
+        <input type="hidden" id="array_withdraw" name="array_withdraw" />
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-12 pt-8 text-center">
                     <h2>สัญญาจ้างเหมางานก่อสร้าง</h2>
                 </div>
                 <div class="col-12 pt-0 fs-14 text-end pe-15">
-                    <p class="m-0">หมายเลขสัญญา : @ViewBag.ContractNumber</p>
-                    <p class="m-0">ทำที่ : @ViewBag.MadeAt</p>
+                    <input type="hidden" name="CreatedById" value="@Session["UserProfile.Id"].ToString()" />
+                    <p class="m-0">หมายเลขสัญญา : @ViewBag.ContractNumber</p><input type="hidden" name="ContractNumber" value="@ViewBag.ContractNumber" />
+                    <p class="m-0">ทำที่ : @ViewBag.MadeAt</p><input type="hidden" name="MadeAt" value="@ViewBag.MadeAt" />
                     <p class="m-0">วันที่ : @ViewBag.CreateDate</p>
                 </div>
             </div>
             <div class="row pt-4">
                 <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">หนังสือสัญญาฉบับนี้ทำขึ้นระหว่าง</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-name" name="OwnerName">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-name" name="OwnerName" value="">
                 </div>
                 <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">ทะเบียนนิติบุคคล/บัตรประชาชนเลขที่</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-number" name="OwnerNumber">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-number" name="OwnerNumber" value="">
                 </div>
             </div>
             <div class="row pt-2">
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">ที่อยู่</label>
                 <div class="col-5 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-address" name="OwnerAddress">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-address" name="OwnerAddress" value="">
                 </div>
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">โทร</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-tel" name="OwnerTel">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-tel" name="OwnerTel" value="">
                 </div>
             </div>
             <div class="row pt-4 fs-14">
@@ -215,21 +305,21 @@
             </div>
             <div class="row pt-4">
                 <div class="offset-1 col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-name" name="ContractorName">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-name" name="ContractorName" value="">
                 </div>
                 <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">ทะเบียนนิติบุคคล/บัตรประชาชนเลขที่</label>
                 <div class="col-3">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-license" name="ContractorLicenseNumber">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-license" name="ContractorLicenseNumber" value="">
                 </div>
             </div>
             <div class="row pt-2">
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">ที่อยู่</label>
                 <div class="col-5 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-address" name="ContractorAddress">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-address" name="ContractorAddress" value="">
                 </div>
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">โทร</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-tel" name="ContractorTel">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-tel" name="ContractorTel" value="">
                 </div>
             </div>
             <div class="row pt-4 fs-14">
@@ -252,7 +342,7 @@
                             <tr>
                                 <td><input type="text" class="form-control" id="txt-contract-description" name="DescriptionOfWork" value=""></td>
                                 <td><input type="text" class="form-control" id="txt-contract-worksite" name="WorkSite" value=""></td>
-                                <td class="align-middle text-red text-center fs-16 fw-bold"><div id="label-contract-summary">0.00</div><input type="hidden" id="contract-summary" value="0" /></td>
+                                <td class="align-middle text-red text-center fs-16 fw-bold"><div id="label-contract-summary">0.00</div><input type="hidden" id="contract-summary" name="ContractValue" value="0" /></td>
                             </tr>
                         </tbody>
                     </table>
@@ -308,11 +398,11 @@
                         @for (int i = 1; i <= 50; i++)
                         {
                             <tbody id="tbody-withdraw-@i"></tbody>
-                        }                           
+                        }
                         <tbody>
                             <tr>
                                 <td colspan="2" class="align-middle fs-16 text-end fw-bold">รวม</td>
-                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent"/></td>
+                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent" /></td>
                                 <td class="align-middle text-red fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-total">0.00</p><input type="hidden" id="withdraw-sum-total" /></td>
                                 <td class="bg-gray">
                                 </td>
@@ -343,8 +433,8 @@
                 <div class="col-12 text-center">
                     <hr class="mt-4 mb-1" />
                     <hr class="mt-1 mb-3" />
-                    <a href="#" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
-                    <a href="#" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">บันทึก</a>
+                    <button id="btn-print" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</button>
+                    <button id="btn-save" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">บันทึก</button>
                 </div>
             </div>
         </div>

@@ -22,6 +22,10 @@ namespace HomeBuilding.Controllers
             return View("ResetPassword");
         }
 
+        public ActionResult ChangePassword() { 
+            return View("ChangePassword");
+        }
+
         public ActionResult ForgotPassword()
         {
             return View("ForgotPassword");

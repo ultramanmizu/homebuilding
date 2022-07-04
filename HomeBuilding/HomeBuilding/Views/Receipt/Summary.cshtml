@@ -6,11 +6,28 @@
 
 @section scripts {
     <script>
-            $(document).ready(function () {
-                $("#from, #to").datepicker({
-                    format: 'dd/mm/yyyy'
-                });
+        $(document).ready(function () {
+            $("#from, #to").datepicker({
+                format: 'dd/mm/yyyy'
             });
+
+            $("#btn-search").click(function () {
+                $("#btn-search").prop('disabled', true);
+                $.post("@Url.Action("ListContractSummarySearch", "Contract")", $("#form-search").serialize(), function (html) {
+                    $("#tbody-search").html(html);
+                    $("#btn-search").prop('disabled', false);
+                    $("#label-sum-total").html("รวมรายการที่เบิกทั้งหมด: " + currency($("#sum-total").val()) + " บาท");
+                });
+                return false;
+            });
+
+            if ($("#name").val() != "") {
+                $("#btn-search").click();
+            }
+        });
+        function currency(number) {
+            return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
+        };
     </script>
 }
 
@@ -19,27 +36,29 @@
         <div class="row align-items-center">
             <div class="col-12 pt-8 text-center">
                 <h2>สรุปรายการออกใบเสร็จรับเงิน</h2>
-                <div class="pt-2 mb-1 row justify-content-center">
-                    <label for="name" class="col-2 col-form-label form-control-sm text-end text-dark">ผู้ว่าจ้าง:</label>
-                    <div class="col-sm-5 ">
-                        <input type="text" class="form-control form-control-sm" id="name">
+                <form id="form-search">
+                    <div class="pt-2 mb-1 row justify-content-center">
+                        <label for="name" class="col-2 col-form-label form-control-sm text-end text-dark">ผู้ว่าจ้าง:</label>
+                        <div class="col-sm-5 ">
+                            <input type="text" class="form-control form-control-sm" id="name" name="name" value="@ViewBag.OwnerName">
+                        </div>
                     </div>
-                </div>
-                <div class="mb-1 row justify-content-md-center">
-                    <label for="detail" class="col-2 col-form-label form-control-sm text-end text-dark">วันที่บันทึก:</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control form-control-sm" id="from">
+                    <div class="mb-1 row justify-content-md-center">
+                        <label for="detail" class="col-2 col-form-label form-control-sm text-end text-dark">วันที่บันทึก:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="from" name="startdate" value="@ViewBag.ContractDate">
+                        </div>
+                        <label for="detail" class="col-1 col-form-label form-control-sm text-end text-dark">ถึงวันที่:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control form-control-sm" id="to" name="enddate" value="@ViewBag.ContractDate">
+                        </div>
                     </div>
-                    <label for="detail" class="col-1 col-form-label form-control-sm text-end text-dark">ถึงวันที่:</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control form-control-sm" id="to">
+                    <div class="row align-items-center pt-4 pb-4">
+                        <div class="col-12">
+                            <button id="btn-search" class="btn btn-sm btn-gradient gradient-6 w-18 fs-16 pt-1 pb-1">ค้นหา</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center pt-4 pb-4">
-                    <div class="col-12">
-                        <a href="#" class="btn btn-sm btn-gradient gradient-6 w-18 fs-16 pt-1 pb-1">ค้นหา</a>
-                    </div>
-                </div>
+                </form>
                 <div class="row align-items-center">
                     <div class="col-12">
                         <hr class="mt-1 mb-3" />
@@ -72,44 +91,14 @@
                                     <th scope="col">จำนวน(บาท)</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tbody-search">
                                 <tr>
-                                    <td>000001</td>
-                                    <td>27/10/2022</td>
-                                    <td>นาย สสส สสส</td>
-                                    <td>นาง สมศรี ใจดี</td>
-                                    <td>งานปูกระเบื้อง/งานเทพื้น/งานรื้อนั่งร้าน</td>
-                                    <td>บ้านคุณ AAA</td>
-                                    <td>1</td>
-                                    <td>000001</td>
-                                    <td class="text-end">250,000.00</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>2</td>
-                                    <td>000002</td>
-                                    <td class="text-end">300,000.00</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>3</td>
-                                    <td>000003</td>
-                                    <td class="text-end">450,000.00</td>
+                                    <td colspan="9" class="text-center">ไม่มีรายการ</td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="col-12 pt-0 pe-0 text-end text-dark">
-                            <p class="fs-16 m-0">รวมรายการที่เบิกทั้งหมด: 1,000,000.00 บาท</p>
+                            <p class="fs-16 m-0" id="label-sum-total">รวมรายการที่เบิกทั้งหมด: 0.00 บาท</p>
                         </div>
                     </div>
                 </div>

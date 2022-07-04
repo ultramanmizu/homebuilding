@@ -35,8 +35,9 @@ namespace HomeBuilding
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RunningNumber> RunningNumbers { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<Withdraw> Withdraws { get; set; }
         public virtual DbSet<UnitPrice> UnitPrices { get; set; }
+        public virtual DbSet<Receipt> Receipts { get; set; }
+        public virtual DbSet<ReceiptDetail> ReceiptDetails { get; set; }
     
         public virtual ObjectResult<string> usp_get_document_number(string key, string prefix, Nullable<int> digit)
         {

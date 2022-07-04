@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using HomeBuilding;
 using System.Threading.Tasks;
-using System.Dynamic;
+using System.Net.Mail;
 
 namespace HomeBuilding.Controllers
 {
@@ -129,7 +129,7 @@ namespace HomeBuilding.Controllers
 
         //GET: Login
         [HttpGet]
-        public async Task<ActionResult> Login(string username, string password) {
+        public ActionResult Login(string username, string password) {
             if (username == null || password == null) { TempData["shortMessage"] = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!";  return RedirectToAction("signin", "Home"); }
             //get user in database
             User user = db.Users.Where(x => x.Username == username && x.Password == password && x.IsEnabled == true && x.IsDeleted == false).FirstOrDefault();
@@ -151,10 +151,61 @@ namespace HomeBuilding.Controllers
                 default: return RedirectToAction("search", "Receipt");
             }
         }
-
         public ActionResult Logout()
         {
             //clear session
+            Session.Clear();
+            return RedirectToAction("signin", "Home");
+        }
+
+        [HttpPost]
+        public HtmlString ChangePassword(FormCollection form) {
+            string html = "success";
+
+            string username = form["username"].ToString();
+            string password = form["password"].ToString();
+            string newPassword = form["newPassword"].ToString();
+            //get user
+            User user = db.Users.Where(x=>x.Username.Equals(username) && 
+                                         x.Password.Equals(password)
+                                     ).FirstOrDefault();
+            if (user != null)
+            {
+                db.Entry(user).State = EntityState.Modified;
+                user.Password = newPassword;
+                user.LastChangePassword = DateTime.Now;
+                user.UpdatedDate = DateTime.Now;
+                
+                db.SaveChanges();
+            }
+            else {
+                html = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+            }
+
+            return new HtmlString(html);
+        }
+
+        [HttpPost]
+        public ActionResult ForgotPassword(FormCollection form)
+        {
+            //send email
+            //var smtpClient = new SmtpClient("smtp.gmail.com")
+            //{
+            //    Port = 587,
+            //    Credentials = new NetworkCredential("email", "password"),
+            //    EnableSsl = true,
+            //};
+            //var mailMessage = new MailMessage
+            //{
+            //    From = new MailAddress("email"),
+            //    Subject = "subject",
+            //    Body = "<h1>Hello</h1>",
+            //    IsBodyHtml = true,
+            //};
+            //mailMessage.To.Add("recipient");
+
+            //smtpClient.Send(mailMessage);
+
             Session.Clear();
             return RedirectToAction("signin", "Home");
         }

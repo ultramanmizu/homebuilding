@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string userFullname = Session["UserProfile.FullName"].ToString();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -37,6 +40,9 @@
                                 <li>
                                     <a class="nav-link fs-18" href="@Url.Action("search", "Receipt")">ค้นหา</a>
                                 </li>
+                                <li>
+                                    <a class="nav-link fs-18">@userFullname <i class="uil uil-user"></i></a>
+                                </li>
                             </ul>
                             <!-- /.navbar-nav -->
 
@@ -61,14 +67,14 @@
 
             </nav>
             <!-- /.navbar -->
-           
+
         </header>
         <!-- /header -->
         <section class="wrapper">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-12">
-                        <hr class="mt-0 mb-0"/>
+                        <hr class="mt-0 mb-0" />
                     </div>
                 </div>
             </div>
@@ -97,6 +103,8 @@
     <script src="~/Scripts/bootstrap.js"></script>
     <script src="~/Scripts/plugins.js"></script>
     <script src="~/Scripts/theme.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 

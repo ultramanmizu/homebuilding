@@ -2,6 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+<<<<<<< HEAD
 /HomeBuilding/.vs/HomeBuilding/FileContentIndex/ed74e662-aa2e-44ee-bd00-ce7a1e6afee1.vsidx
 /HomeBuilding/.vs/HomeBuilding/FileContentIndex/c1640330-3d87-4d95-bfbf-dea5566f64cd.vsidx
 /HomeBuilding/.vs/HomeBuilding/FileContentIndex/b4d39ba2-810e-4dde-a88f-3904bf982a42.vsidx
@@ -10,3 +11,6 @@
 /HomeBuilding/.vs/HomeBuilding/FileContentIndex/5301fe5e-b500-4cf9-b1f1-e5d205a8abfd.vsidx
 /HomeBuilding/.vs/HomeBuilding/FileContentIndex/5febc5ba-7db3-4e55-beaf-9d01f9c1ed3e.vsidx
 /HomeBuilding/.vs/HomeBuilding/FileContentIndex/df71e2a7-4e65-4681-aff5-229ab8d26eab.vsidx
+=======
+/HomeBuilding/.vs/HomeBuilding/FileContentIndex/58336a83-7cbc-4724-9392-d27d324c3438.vsidx
+>>>>>>> dev-connection

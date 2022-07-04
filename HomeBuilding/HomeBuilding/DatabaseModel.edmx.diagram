@@ -12,9 +12,10 @@
         <EntityTypeShape EntityType="HomeBuildingModel.MaterialUnit" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HomeBuildingModel.Role" Width="1.5" PointX="6.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HomeBuildingModel.RunningNumber" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="HomeBuildingModel.UnitPirce" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HomeBuildingModel.User" Width="1.5" PointX="8.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="HomeBuildingModel.Withdraw" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HomeBuildingModel.UnitPrice" Width="1.5" PointX="3" PointY="5.75" />
+        <EntityTypeShape EntityType="HomeBuildingModel.Receipt" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="HomeBuildingModel.ReceiptDetail" Width="1.5" PointX="5.375" PointY="10.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

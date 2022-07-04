@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="HomeBuildingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="HomeBuildingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ConstructionContract">
           <Key>
             <PropertyRef Name="Id" />
@@ -26,6 +26,7 @@
           <Property Name="ContractorLicenseNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="DescriptionOfWork" Type="nvarchar" MaxLength="2000" />
           <Property Name="WorkSite" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ContractValue" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Description" Type="nvarchar" MaxLength="250" />
           <Property Name="Sequence" Type="int" Nullable="false" />
           <Property Name="IsEnabled" Type="bit" Nullable="false" />
@@ -117,6 +118,48 @@
           <Property Name="DeletedById" Type="uniqueidentifier" />
           <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Receipt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ConstructionContractId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Round" Type="int" />
+          <Property Name="ReceiptNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReceiptDate" Type="datetime" />
+          <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="250" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="IsEnabled" Type="bit" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="CreatedById" Type="uniqueidentifier" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedById" Type="uniqueidentifier" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="DeletedById" Type="uniqueidentifier" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ReceiptDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ReceiptId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LineNo" Type="int" Nullable="false" />
+          <Property Name="Detail" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Percent" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="250" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="IsEnabled" Type="bit" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="CreatedById" Type="uniqueidentifier" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedById" Type="uniqueidentifier" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="DeletedById" Type="uniqueidentifier" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="Id" />
@@ -160,7 +203,7 @@
           <Property Name="DeletedById" Type="uniqueidentifier" />
           <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
-        <EntityType Name="UnitPirce">
+        <EntityType Name="UnitPrice">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -208,43 +251,25 @@
           <Property Name="DeletedById" Type="uniqueidentifier" />
           <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
-        <EntityType Name="Withdraw">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ConstructionContractId" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="ReceiptNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="WithdrawDate" Type="datetime" />
-          <Property Name="LineNo" Type="int" Nullable="false" />
-          <Property Name="Detail" Type="nvarchar" MaxLength="1000" />
-          <Property Name="Percent" Type="decimal" Precision="16" Scale="2" Nullable="false" />
-          <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="250" />
-          <Property Name="Sequence" Type="int" Nullable="false" />
-          <Property Name="IsEnabled" Type="bit" Nullable="false" />
-          <Property Name="IsDeleted" Type="bit" Nullable="false" />
-          <Property Name="CreatedById" Type="uniqueidentifier" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="UpdatedById" Type="uniqueidentifier" />
-          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
-          <Property Name="DeletedById" Type="uniqueidentifier" />
-          <Property Name="DeletedDate" Type="datetime" />
-        </EntityType>
+        <Function Name="usp_get_document_number" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Key" Type="nvarchar" Mode="In" />
+          <Parameter Name="Prefix" Type="nvarchar" Mode="In" />
+          <Parameter Name="Digit" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="HomeBuildingModelStoreContainer">
           <EntitySet Name="ConstructionContract" EntityType="Self.ConstructionContract" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContractDescription" EntityType="Self.ContractDescription" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MasterData" EntityType="Self.MasterData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Material" EntityType="Self.Material" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MaterialUnit" EntityType="Self.MaterialUnit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Receipt" EntityType="Self.Receipt" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReceiptDetail" EntityType="Self.ReceiptDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RunningNumber" EntityType="Self.RunningNumber" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UnitPirce" EntityType="Self.UnitPirce" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UnitPrice" EntityType="Self.UnitPrice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Withdraw" EntityType="Self.Withdraw" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HomeBuildingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -279,6 +304,7 @@
           <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DeletedById" Type="Guid" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="ContractValue" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="ContractDescription">
           <Key>
@@ -403,27 +429,6 @@
           <Property Name="DeletedById" Type="Guid" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="UnitPirce">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="UnitId" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Price" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EndDate" Type="DateTime" Precision="3" />
-          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Sequence" Type="Int32" Nullable="false" />
-          <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedById" Type="Guid" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedById" Type="Guid" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DeletedById" Type="Guid" />
-          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
@@ -451,18 +456,37 @@
           <Property Name="DeletedById" Type="Guid" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Withdraw">
+        <EntityContainer Name="HomeBuildingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ConstructionContracts" EntityType="Self.ConstructionContract" />
+          <EntitySet Name="ContractDescriptions" EntityType="Self.ContractDescription" />
+          <EntitySet Name="MasterDatas" EntityType="Self.MasterData" />
+          <EntitySet Name="Materials" EntityType="Self.Material" />
+          <EntitySet Name="MaterialUnits" EntityType="Self.MaterialUnit" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="RunningNumbers" EntityType="Self.RunningNumber" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <FunctionImport Name="usp_get_document_number" ReturnType="Collection(String)">
+            <Parameter Name="Key" Mode="In" Type="String" />
+            <Parameter Name="Prefix" Mode="In" Type="String" />
+            <Parameter Name="Digit" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="UnitPrices" EntityType="HomeBuildingModel.UnitPrice" />
+          <EntitySet Name="Receipts" EntityType="HomeBuildingModel.Receipt" />
+          <EntitySet Name="ReceiptDetails" EntityType="HomeBuildingModel.ReceiptDetail" />
+        </EntityContainer>
+        <ComplexType Name="GetDocumentNumber_Result">
+          <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
+        </ComplexType>
+        <EntityType Name="UnitPrice">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="ConstructionContractId" Type="Guid" Nullable="false" />
-          <Property Name="ReceiptNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="WithdrawDate" Type="DateTime" Precision="3" />
-          <Property Name="LineNo" Type="Int32" Nullable="false" />
-          <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Percent" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
-          <Property Name="Total" Type="Decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="UnitId" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
           <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" Nullable="false" />
           <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
@@ -474,18 +498,48 @@
           <Property Name="DeletedById" Type="Guid" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityContainer Name="HomeBuildingEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ConstructionContracts" EntityType="Self.ConstructionContract" />
-          <EntitySet Name="ContractDescriptions" EntityType="Self.ContractDescription" />
-          <EntitySet Name="MasterDatas" EntityType="Self.MasterData" />
-          <EntitySet Name="Materials" EntityType="Self.Material" />
-          <EntitySet Name="MaterialUnits" EntityType="Self.MaterialUnit" />
-          <EntitySet Name="Roles" EntityType="Self.Role" />
-          <EntitySet Name="RunningNumbers" EntityType="Self.RunningNumber" />
-          <EntitySet Name="UnitPirces" EntityType="Self.UnitPirce" />
-          <EntitySet Name="Users" EntityType="Self.User" />
-          <EntitySet Name="Withdraws" EntityType="Self.Withdraw" />
-        </EntityContainer>
+        <EntityType Name="Receipt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ConstructionContractId" Type="Guid" Nullable="false" />
+          <Property Name="ReceiptNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReceiptDate" Type="DateTime" Precision="3" />
+          <Property Name="Total" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedById" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedById" Type="Guid" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeletedById" Type="Guid" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+          <Property Name="Round" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ReceiptDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ReceiptId" Type="Guid" Nullable="false" />
+          <Property Name="LineNo" Type="Int32" Nullable="false" />
+          <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Percent" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <Property Name="Total" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedById" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedById" Type="Guid" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeletedById" Type="Guid" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -495,6 +549,7 @@
           <EntitySetMapping Name="ConstructionContracts">
             <EntityTypeMapping TypeName="HomeBuildingModel.ConstructionContract">
               <MappingFragment StoreEntitySet="ConstructionContract">
+                <ScalarProperty Name="ContractValue" ColumnName="ContractValue" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ContractNumber" ColumnName="ContractNumber" />
                 <ScalarProperty Name="ContractDate" ColumnName="ContractDate" />
@@ -654,28 +709,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="UnitPirces">
-            <EntityTypeMapping TypeName="HomeBuildingModel.UnitPirce">
-              <MappingFragment StoreEntitySet="UnitPirce">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="UnitId" ColumnName="UnitId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
-                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="HomeBuildingModel.User">
               <MappingFragment StoreEntitySet="User">
@@ -704,27 +737,70 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Withdraws">
-            <EntityTypeMapping TypeName="HomeBuildingModel.Withdraw">
-              <MappingFragment StoreEntitySet="Withdraw">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ConstructionContractId" ColumnName="ConstructionContractId" />
-                <ScalarProperty Name="ReceiptNumber" ColumnName="ReceiptNumber" />
-                <ScalarProperty Name="WithdrawDate" ColumnName="WithdrawDate" />
-                <ScalarProperty Name="LineNo" ColumnName="LineNo" />
-                <ScalarProperty Name="Detail" ColumnName="Detail" />
-                <ScalarProperty Name="Percent" ColumnName="Percent" />
-                <ScalarProperty Name="Total" ColumnName="Total" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+          <FunctionImportMapping FunctionImportName="usp_get_document_number" FunctionName="HomeBuildingModel.Store.usp_get_document_number" />
+          <EntitySetMapping Name="UnitPrices">
+            <EntityTypeMapping TypeName="HomeBuildingModel.UnitPrice">
+              <MappingFragment StoreEntitySet="UnitPrice">
                 <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UnitId" ColumnName="UnitId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Receipts">
+            <EntityTypeMapping TypeName="HomeBuildingModel.Receipt">
+              <MappingFragment StoreEntitySet="Receipt">
+                <ScalarProperty Name="Round" ColumnName="Round" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="ReceiptDate" ColumnName="ReceiptDate" />
+                <ScalarProperty Name="ReceiptNumber" ColumnName="ReceiptNumber" />
+                <ScalarProperty Name="ConstructionContractId" ColumnName="ConstructionContractId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReceiptDetails">
+            <EntityTypeMapping TypeName="HomeBuildingModel.ReceiptDetail">
+              <MappingFragment StoreEntitySet="ReceiptDetail">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="LineNo" ColumnName="LineNo" />
+                <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

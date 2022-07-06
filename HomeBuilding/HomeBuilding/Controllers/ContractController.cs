@@ -25,28 +25,29 @@ namespace HomeBuilding.Controllers
             string prefix = string.Concat("C-", DateTime.Now.Year.ToString(), "-");
             var docNumber = db.usp_get_document_number("Contract", prefix, 6).FirstOrDefault();
             ViewBag.ContractNumber = docNumber.ToString();
-            ViewBag.MadeAt = "บริษัท เนเจอร์ เอ็ซเทท จำกัด";
+            //ViewBag.MadeAt = "บริษัท เนเจอร์ เอ็ซเทท จำกัด";
             ViewBag.CreateDate = DateTime.Now.ToString("dd/MM/yyyy");
 
             return View();
         }
         public HtmlString GetDescriptionForm(int i, int line_no)
         {
+            string pathImageDel = Url.Content("~/Content/images/icons/delete_remove_icon.svg");
             //get Material/Labor
             List<Material> materials = db.Materials.Where(x => x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
 
-            string html = "<tr id=\"tr-description-" + i + "\"><td class=\"align-middle\"><div id=\"description-line-" + i + "\">" + line_no + "</div></td><td><select class=\"form-select\" id=\"select-material-" + i + "\" name=\"material-" + i + "\" onchange=\"javascript:MaterialChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือกข้อมูล</option>";
+            string html = "<tr id=\"tr-description-" + i + "\"><td class=\"align-middle\"><div id=\"description-line-" + i + "\">" + line_no + "</div></td><td><div id=\"div-select-material-" + i + "\"><select class=\"form-select\" id=\"select-material-" + i + "\" name=\"material-" + i + "\" onchange=\"javascript:MaterialChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือกข้อมูล</option>";
             foreach (Material material in materials)
             {
                 html += "<option value=\"" + material.Id + "\">" + material.Name + "</option>";
             }
-            html += "</select></td>" +
+            html += "<option value=\"other\">อื่นๆ ระบุ</option></select></div><div id=\"div-txt-material-" + i + "\" style=\"display: none;\"><input type=\"text\" class=\"form-control\" id=\"txt-material-" + i + "\" name=\"material-other-" + i + "\" value=\"\"></div></td>" +
                 "<td><input type=\"number\" min=\"0\" class=\"form-control\" id=\"txt-quantity-" + i + "\" name=\"quantity-" + i + "\" value=\"0\" onblur=\"javascript:SumDescription('" + i + "')\"></td>" +
-                "<td><select class=\"form-select text-start\" id=\"select-unit-" + i + "\" name=\"unit-" + i + "\" onchange=\"javascript:UnitChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือก</option></select></td>" +
-                "<td><select class=\"form-select text-start\"id=\"select-unitprice-" + i + "\" name=\"unitprice-" + i + "\" onchange=\"javascript:SumDescription('" + i + "')\"><option value=\"0\" selected>กรุณาเลือก</option></select></td>" +
+                "<td><div id=\"div-select-unit-" + i + "\"><select class=\"form-select text-start\" id=\"select-unit-" + i + "\" name=\"unit-" + i + "\" onchange=\"javascript:UnitChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือก</option></select></div><div id=\"div-txt-unit-" + i + "\" style=\"display: none;\"><input type=\"text\" class=\"form-control\" id=\"txt-unit-" + i + "\" name=\"unit-other-" + i + "\" value=\"\"></div></td>" +
+                "<td><div id=\"div-select-unitprice-" + i + "\"><select class=\"form-select text-start\"id=\"select-unitprice-" + i + "\" name=\"unitprice-" + i + "\" onchange=\"javascript:SumDescription('" + i + "')\"><option value=\"0\" selected>กรุณาเลือก</option></select></div><div id=\"div-txt-unitprice-" + i + "\" style=\"display: none;\"><input type=\"number\" min=\"0\" class=\"form-control\" id=\"txt-unitprice-" + i + "\" name=\"unitprice-other-" + i + "\" value=\"0\" onblur=\"javascript:SumDescription('" + i + "')\"></div></td>" +
                 "<td class=\"align-middle text-red fs-16 text-center\"><p class=\"p-0 m-0\" id=\"lable-description-total-" + i + "\">0.00</p><input type=\"hidden\" id=\"description-total-" + i + "\" name=\"description-total-" + i + "\" value=\"0\"></td>" +
                 "<td class=\"align-middle w-0 text-center bg-gray\">" +
-                    "<a href=\"javascript:RemoveDescription('" + i + "')\"><img src=\"../../Content/images/icons/delete_remove_icon.svg\" width=\"16\" title=\"ลบ\"/></a> " +
+                    "<a href=\"javascript:RemoveDescription('" + i + "')\"><img src=\"" + pathImageDel + "\" width=\"16\" title=\"ลบ\"/></a> " +
                 "</td></tr>";
             return new HtmlString(html);
         }
@@ -57,11 +58,12 @@ namespace HomeBuilding.Controllers
             if (materialId != "")
             {
                 //get Unit
-                List<MaterialUnit> units = db.MaterialUnits.Where(x => x.MaterialId == new Guid(materialId) && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+                List<MaterialUnit> units = db.MaterialUnits.Where(x => x.MaterialId == new Guid(materialId) && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.CreatedDate).ToList();
                 foreach (MaterialUnit unit in units)
                 {
                     html += "<option value=\"" + unit.Id + "\">" + unit.Name + "</option>";
                 }
+                html += "<option value=\"other\">อื่นๆ ระบุ</option>";
             }
             return new HtmlString(html);
         }
@@ -72,19 +74,21 @@ namespace HomeBuilding.Controllers
             if (unitId != "")
             {
                 //get Unit Price
-                List<UnitPrice> prices = db.UnitPrices.Where(x => x.UnitId == new Guid(unitId) && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+                List<UnitPrice> prices = db.UnitPrices.Where(x => x.UnitId == new Guid(unitId) && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.CreatedDate).ToList();
                 foreach (UnitPrice price in prices)
                 {
                     html += "<option value=\"" + price.Price + "\">" + price.Name + "</option>";
                 }
+                html += "<option value=\"other\">อื่นๆ ระบุ</option>";
             }
             return new HtmlString(html);
         }
 
         public HtmlString GetWithdrawForm(int i, int line_no)
         {
+            string pathImageDel = Url.Content("~/Content/images/icons/delete_remove_icon.svg");
             //get Options
-            List<MasterData> masterDatas = db.MasterDatas.Where(x => x.Key.Contains("withdraw") && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Sequence).ToList();
+            List<MasterData> masterDatas = db.MasterDatas.Where(x => x.Key.Contains("withdraw") && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.CreatedDate).ToList();
 
             string html = "<tr id=\"tr-withdraw-" + i + "\"><td class=\"align-middle\"><div id=\"withdraw-line-" + i + "\">" + line_no + "</div></td><td><div id=\"div-select-withdraw-" + i + "\"><select class=\"form-select\" id=\"select-withdraw-" + i + "\" name=\"withdraw-" + i + "\" onchange=\"javascript:WithdrawChange('" + i + "')\"><option value=\"\" selected>กรุณาเลือกข้อมูล</option>";
             foreach (MasterData option in masterDatas)
@@ -95,7 +99,7 @@ namespace HomeBuilding.Controllers
                     "<td class=\"align-middle\"><input type=\"text\" class=\"form-control text-center fs-16\" id=\"txt-withdraw-percent-" + i + "\" name=\"withdraw-percent-" + i + "\" value=\"0\" onblur=\"javascript:SumWithdraw('" + i + "')\"></td>" +
                     "<td class=\"align-middle text-red fs-16 text-center\"><p class=\"p-0 m-0\" id=\"lable-withdraw-total-" + i + "\">0.00</p><input type=\"hidden\" id=\"withdraw-total-" + i + "\" name=\"withdraw-total-" + i + "\" value=\"0\"></td>" +
                     "<td class=\"align-middle w-0 text-center bg-gray\">" +
-                        "<a href=\"javascript:RemoveWithdraw('" + i + "')\"><img src=\"../../Content/images/icons/delete_remove_icon.svg\" width=\"16\" title=\"ลบ\"/></a> " +
+                        "<a href=\"javascript:RemoveWithdraw('" + i + "')\"><img src=\""+ pathImageDel + "\" width=\"16\" title=\"ลบ\"/></a> " +
                     "</td></tr>";
             return new HtmlString(html);
         }
@@ -109,7 +113,7 @@ namespace HomeBuilding.Controllers
                 Id = Guid.NewGuid(),
                 ContractNumber = form["ContractNumber"],
                 ContractDate = DateTime.Now.Date,
-                MadeAt = form["MadeAt"],
+                MadeAt = form["OwnerAddress"],
                 OwnerName = form["OwnerName"],
                 OwnerNumber = form["OwnerNumber"],
                 OwnerAddress = form["OwnerAddress"],
@@ -131,10 +135,77 @@ namespace HomeBuilding.Controllers
             //contract description
             string[] arrayDescription = form["array_description"].Split(',');
             int line = 1;
+
+            var materialData = db.Materials.Where(x => x.IsEnabled == true && x.IsDeleted == false).OrderByDescending(o => o.Sequence).FirstOrDefault();
+            int materiaSeq = materialData.Sequence;
             foreach (string desIndex in arrayDescription)
             {
-                Material material = db.Materials.Find(new Guid(form["material-" + desIndex]));
-                MaterialUnit unit = db.MaterialUnits.Find(new Guid(form["unit-" + desIndex]));
+                Material material;
+                if (form["material-" + desIndex] == "other")
+                {
+                    //create material
+                    materiaSeq++;
+                    material = new Material() {
+                        Id = Guid.NewGuid(),
+                        Type = "Labor",
+                        Name = form["material-other-" + desIndex].ToString(),
+                        Sequence = materiaSeq,
+                        CreatedById = new Guid(form["CreatedById"]),
+                        CreatedDate = DateTime.Now,
+                        UpdatedById = new Guid(form["CreatedById"]),
+                        UpdatedDate = DateTime.Now,
+                        IsEnabled = true
+                    };
+                    db.Materials.Add(material);
+                }
+                else {
+                    material = db.Materials.Find(new Guid(form["material-" + desIndex]));
+                }
+
+                MaterialUnit unit;
+                if (form["unit-" + desIndex] == "other")
+                {
+                    unit = new MaterialUnit() {
+                        Id = Guid.NewGuid(),
+                        MaterialId = material.Id,
+                        Name = form["unit-other-" + desIndex].ToString(),
+                        Sequence = 1,
+                        CreatedById = new Guid(form["CreatedById"]),
+                        CreatedDate = DateTime.Now,
+                        UpdatedById = new Guid(form["CreatedById"]),
+                        UpdatedDate = DateTime.Now,
+                        IsEnabled = true
+                    };
+                    db.MaterialUnits.Add(unit);
+                }
+                else {
+                    unit = db.MaterialUnits.Find(new Guid(form["unit-" + desIndex]));
+                }
+
+                decimal price;
+                if (form["unitprice-" + desIndex] == "other")
+                {
+                    price = Convert.ToDecimal(form["unitprice-other-" + desIndex]);
+                    UnitPrice unitPrice = new UnitPrice() {
+                        Id = Guid.NewGuid(),
+                        UnitId = unit.Id,
+                        Name = String.Format("{0:N}", price),
+                        Price = price,
+                        StartDate = DateTime.Now,
+                        Sequence = 1,
+                        CreatedById = new Guid(form["CreatedById"]),
+                        CreatedDate = DateTime.Now,
+                        UpdatedById = new Guid(form["CreatedById"]),
+                        UpdatedDate = DateTime.Now,
+                        IsEnabled = true
+                    };
+                    db.UnitPrices.Add(unitPrice);
+                   
+                }
+                else {
+                    price = Convert.ToDecimal(form["unitprice-" + desIndex]);
+                }
+
                 ContractDescription description = new ContractDescription()
                 {
                     Id = Guid.NewGuid(),
@@ -144,7 +215,7 @@ namespace HomeBuilding.Controllers
                     Detail = material.Name,
                     Quantity = Convert.ToDecimal(form["quantity-" + desIndex]),
                     Unit = unit.Name,
-                    UnitPrice = Convert.ToDecimal(form["unitprice-" + desIndex]),
+                    UnitPrice = price,
                     Total = Convert.ToDecimal(form["description-total-" + desIndex]),
                     CreatedById = new Guid(form["CreatedById"]),
                     CreatedDate = DateTime.Now,

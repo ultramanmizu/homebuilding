@@ -55,7 +55,7 @@
 
             $("#btn-save").click(function () {
                 var isValidate = validator();
-                if (isValidate) { 
+                if (isValidate) {
                     if (confirm("ยืนยันการบันทึก")) {
                         $("#array_description").val(array_description);
                         $("#array_withdraw").val(array_withdraw);
@@ -63,6 +63,10 @@
                     }
                 }
                 return false;
+            });
+
+            $("#txt-owner-address").blur(function () {
+                $("#lable-madeat").html("ทำที่ : " + $(this).val());
             });
         });
 
@@ -99,8 +103,17 @@
         }
 
         function SumDescription(i) {
+            let price = 0;
+            if ($("#select-unitprice-" + i).val() === "other") {
+                price = parseFloat($("#txt-unitprice-" + i).val());
+                $("#div-select-unitprice-" + i).hide();
+                $("#div-txt-unitprice-" + i).show();
+            }
+            else {
+                price = parseFloat($("#select-unitprice-" + i).val());
+            }
+
             const quantity = parseFloat($("#txt-quantity-" + i).val());
-            const price = parseFloat($("#select-unitprice-" + i).val());
             const sum = parseFloat(quantity * price);
 
             $("#lable-description-total-" + i).html(currency(sum));
@@ -111,7 +124,14 @@
         function SumTotalDescription() {
             let total = parseFloat(0.00);
             array_description.forEach(element => {
-                total += parseFloat(parseFloat($("#txt-quantity-" + element).val()) * parseFloat($("#select-unitprice-" + element).val()));
+                let price = 0;
+                if ($("#select-unitprice-" + element).val() === "other") {
+                    price = parseFloat($("#txt-unitprice-" + element).val())
+                }
+                else {
+                    price = parseFloat($("#select-unitprice-" + element).val())
+                }
+                total += parseFloat(parseFloat($("#txt-quantity-" + element).val()) * price);
             });
 
             $("#label-total-description,#label-contract-summary").html(currency(total));
@@ -164,17 +184,34 @@
 
         function MaterialChange(i) {
             const value = $("#select-material-" + i).val();
-            $.get("@Url.Action("GetUnitForm", "Contract")", { i: i, materialId: value }, function (options) {
-                $("#select-unit-" + i).html(options);
-                $("#txt-quantity-" + i).val(0);
-                var option = "<option value=\"0\" selected>กรุณาเลือก</option>"
-                $("#select-unitprice-" + i).html(option);
-                SumDescription(i);
-            });
+            if (value === "other") {
+                $("#div-select-material-" + i).hide();
+                $("#div-txt-material-" + i).show();
+
+                var option = "<option value=\"other\" selected>อื่นๆ ระบุ</option>"
+                $("#select-unit-" + i).html(option);
+                $("#select-unit-" + i).change();
+            }
+            else {
+
+                $.get("@Url.Action("GetUnitForm", "Contract")", { i: i, materialId: value }, function (options) {
+                    $("#select-unit-" + i).html(options);
+                    $("#txt-quantity-" + i).val(0);
+                    var option = "<option value=\"0\" selected>กรุณาเลือก</option>"
+                    $("#select-unitprice-" + i).html(option);
+                    $("#div-txt-unit-" + i).hide();
+                    $("#div-select-unit-" + i).show();
+
+                    $("#txt-unitprice-" + i).val("0");
+                    $("#div-txt-unitprice-" + i).hide();
+                    $("#div-select-unitprice-" + i).show();
+                    SumDescription(i);
+                });
+            }
         }
 
         function WithdrawChange(i) {
-            if ($("#select-withdraw-" + i).val() == "other") {
+            if ($("#select-withdraw-" + i).val() === "other") {
                 $("#div-select-withdraw-" + i).hide();
                 $("#div-txt-withdraw-" + i).show();
             }
@@ -182,10 +219,25 @@
 
         function UnitChange(i) {
             const value = $("#select-unit-" + i).val();
-            $.get("@Url.Action("GetUnitPriceForm", "Contract")", { i: i, unitId: value }, function (options) {
-                $("#select-unitprice-" + i).html(options);
-                SumDescription(i);
-            });
+            if (value === "other") {
+                $("#txt-unit-" + i).val("");
+                $("#div-select-unit-" + i).hide();
+                $("#div-txt-unit-" + i).show();
+                //unitprice
+                var option = "<option value=\"other\" selected>อื่นๆ ระบุ</option>"
+                $("#select-unitprice-" + i).html(option);
+                $("#select-unitprice-" + i).change();
+            }
+            else {
+                $.get("@Url.Action("GetUnitPriceForm", "Contract")", { i: i, unitId: value }, function (options) {
+                    $("#select-unitprice-" + i).html(options);
+                    $("#txt-unitprice-"+i).val("0");
+                    $("#div-txt-unitprice-" + i).hide();
+                    $("#div-select-unitprice-" + i).show();
+                    SumDescription(i);
+                });
+            }
+
         }
 
         function currency(number) {
@@ -234,14 +286,23 @@
                 if ($("#select-material-" + element).val() === "") { isValidate = false; $("#select-material-" + element).addClass("border-danger"); }
                 else { $("#select-material-" + element).removeClass("border-danger"); }
 
+                if ($("#select-material-" + element).val() === "other" && $("#txt-material-" + element).val() === "") { isValidate = false; $("#txt-material-" + element).addClass("border-danger"); }
+                else { $("#txt-material-" + element).removeClass("border-danger"); }
+
                 if ($("#txt-quantity-" + element).val() === "0") { isValidate = false; $("#txt-quantity-" + element).addClass("border-danger"); }
                 else { $("#txt-quantity-" + element).removeClass("border-danger"); }
 
                 if ($("#select-unit-" + element).val() === "") { isValidate = false; $("#select-unit-" + element).addClass("border-danger"); }
                 else { $("#select-unit-" + element).removeClass("border-danger"); }
 
+                if ($("#select-unit-" + element).val() === "other" && $("#txt-unit-" + element).val() === "") { isValidate = false; $("#txt-unit-" + element).addClass("border-danger"); }
+                else { $("#txt-unit-" + element).removeClass("border-danger"); }
+
                 if ($("#select-unitprice-" + element).val() === "0") { isValidate = false; $("#select-unitprice-" + element).addClass("border-danger"); }
                 else { $("#select-unitprice-" + element).removeClass("border-danger"); }
+
+                if ($("#select-unitprice-" + element).val() === "other" && $("#txt-unitprice-" + element).val() === "0") { isValidate = false; $("#txt-unitprice-" + element).addClass("border-danger"); }
+                else { $("#txt-unitprice-" + element).removeClass("border-danger"); }
             });
 
             array_withdraw.forEach(element => {
@@ -250,9 +311,9 @@
 
                 if ($("#select-withdraw-" + element).val() === "other" && $("#txt-withdraw-" + element).val() === "") { isValidate = false; $("#txt-withdraw-" + element).addClass("border-danger"); }
                 else { $("#txt-withdraw-" + element).removeClass("border-danger"); }
-                
+
                 if($("#txt-withdraw-percent-" + element).val() === "0") { isValidate = false; $("#txt-withdraw-percent-" + element).addClass("border-danger"); }
-                else { $("#txt-withdraw-percent-" + element).removeClass("border-danger"); } 
+                else { $("#txt-withdraw-percent-" + element).removeClass("border-danger"); }
             });
 
             if (!isValidate) {
@@ -274,7 +335,7 @@
                 <div class="col-12 pt-0 fs-14 text-end pe-15">
                     <input type="hidden" name="CreatedById" value="@Session["UserProfile.Id"].ToString()" />
                     <p class="m-0">หมายเลขสัญญา : @ViewBag.ContractNumber</p><input type="hidden" name="ContractNumber" value="@ViewBag.ContractNumber" />
-                    <p class="m-0">ทำที่ : @ViewBag.MadeAt</p><input type="hidden" name="MadeAt" value="@ViewBag.MadeAt" />
+                    <p class="m-0" id="lable-madeat">ทำที่ : </p>
                     <p class="m-0">วันที่ : @ViewBag.CreateDate</p>
                 </div>
             </div>
@@ -364,7 +425,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-description-0">
-                            <tr><td colspan="7" class="text-center">ไม่มีรายการ</td></tr>
+                            <tr><td colspan="6" class="text-center">ไม่มีรายการ</td><td class="bg-gray"></td></tr>
                         </tbody>
                         @for (int i = 1; i <= 50; i++)
                         {
@@ -393,7 +454,7 @@
                             </tr>
                         </thead>
                         <tbody id="tbody-withdraw-0">
-                            <tr><td colspan="5" class="text-center">ไม่มีรายการ</td></tr>
+                            <tr><td colspan="4" class="text-center">ไม่มีรายการ</td><td class="bg-gray"></td></tr>
                         </tbody>
                         @for (int i = 1; i <= 50; i++)
                         {

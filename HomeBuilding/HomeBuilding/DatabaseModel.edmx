@@ -251,6 +251,27 @@
           <Property Name="DeletedById" Type="uniqueidentifier" />
           <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="Withdraw">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ConstructionContractId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LineNo" Type="int" Nullable="false" />
+          <Property Name="Detail" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Percent" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="250" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+          <Property Name="IsEnabled" Type="bit" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="CreatedById" Type="uniqueidentifier" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedById" Type="uniqueidentifier" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="DeletedById" Type="uniqueidentifier" />
+          <Property Name="DeletedDate" Type="datetime" />
+        </EntityType>
         <Function Name="usp_get_document_number" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Key" Type="nvarchar" Mode="In" />
           <Parameter Name="Prefix" Type="nvarchar" Mode="In" />
@@ -268,6 +289,7 @@
           <EntitySet Name="RunningNumber" EntityType="Self.RunningNumber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UnitPrice" EntityType="Self.UnitPrice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Withdraw" EntityType="Self.Withdraw" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -473,6 +495,7 @@
           <EntitySet Name="UnitPrices" EntityType="HomeBuildingModel.UnitPrice" />
           <EntitySet Name="Receipts" EntityType="HomeBuildingModel.Receipt" />
           <EntitySet Name="ReceiptDetails" EntityType="HomeBuildingModel.ReceiptDetail" />
+          <EntitySet Name="Withdraws" EntityType="HomeBuildingModel.Withdraw" />
         </EntityContainer>
         <ComplexType Name="GetDocumentNumber_Result">
           <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
@@ -525,6 +548,27 @@
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="ReceiptId" Type="Guid" Nullable="false" />
+          <Property Name="LineNo" Type="Int32" Nullable="false" />
+          <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Percent" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <Property Name="Total" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedById" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedById" Type="Guid" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeletedById" Type="Guid" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Withdraw">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ConstructionContractId" Type="Guid" Nullable="false" />
           <Property Name="LineNo" Type="Int32" Nullable="false" />
           <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Percent" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
@@ -800,6 +844,28 @@
                 <ScalarProperty Name="Detail" ColumnName="Detail" />
                 <ScalarProperty Name="LineNo" ColumnName="LineNo" />
                 <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Withdraws">
+            <EntityTypeMapping TypeName="HomeBuildingModel.Withdraw">
+              <MappingFragment StoreEntitySet="Withdraw">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="LineNo" ColumnName="LineNo" />
+                <ScalarProperty Name="ConstructionContractId" ColumnName="ConstructionContractId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

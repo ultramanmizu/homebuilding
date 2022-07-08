@@ -287,3 +287,14 @@ D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBui
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBuilding.csproj.CopyComplete
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBuilding.dll
 D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\obj\Debug\HomeBuilding.pdb
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\ZetPDF.dll
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\PdfSharp.Charting.dll
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\PdfSharp.dll
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\System.Drawing.Common.dll
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\System.Text.Encoding.CodePages.dll
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\PdfSharp.xml
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\PdfSharp.Charting.xml
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\System.Drawing.Common.xml
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\System.Text.Encoding.CodePages.xml
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\de\PdfSharp.resources.dll
+D:\Project\HomeBuilding\homebuilding\HomeBuilding\HomeBuilding\bin\de\PdfSharp.Charting.resources.dll

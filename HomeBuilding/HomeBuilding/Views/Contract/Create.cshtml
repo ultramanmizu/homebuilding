@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Search";
-    Layout = "~/Views/Shared/_LayoutContract.cshtml";
+    Layout = "~/Views/Shared/_LayoutReceipt.cshtml";
 
     string userFullname = Session["UserProfile.FullName"].ToString();
 }
@@ -316,6 +316,8 @@
                 else { $("#txt-withdraw-percent-" + element).removeClass("border-danger"); }
             });
 
+            if ($("#withdraw-sum-percent").val() > 100) { isValidate = false; alert("รายการเบิกเงินเกิน 100 เปอร์เซ็นต์"); }
+
             if (!isValidate) {
                 $('html, body').animate({ scrollTop: 0 }, 'fast');
             }
@@ -342,21 +344,21 @@
             <div class="row pt-4">
                 <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">หนังสือสัญญาฉบับนี้ทำขึ้นระหว่าง</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-name" name="OwnerName" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-name" name="OwnerName" value="นาย อาทิตย์ เสนารักษ์">
                 </div>
                 <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">ทะเบียนนิติบุคคล/บัตรประชาชนเลขที่</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-number" name="OwnerNumber" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-number" name="OwnerNumber" value="9987455421584">
                 </div>
             </div>
             <div class="row pt-2">
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">ที่อยู่</label>
                 <div class="col-5 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-address" name="OwnerAddress" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-address" name="OwnerAddress" value="87/654">
                 </div>
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">โทร</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-owner-tel" name="OwnerTel" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-owner-tel" name="OwnerTel" value="0839878447">
                 </div>
             </div>
             <div class="row pt-4 fs-14">
@@ -366,21 +368,21 @@
             </div>
             <div class="row pt-4">
                 <div class="offset-1 col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-name" name="ContractorName" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-name" name="ContractorName" value="นาย สมบูรณ์ งอยภูธร">
                 </div>
                 <label for="" class="col-3 col-form-label form-control-sm text-end text-dark">ทะเบียนนิติบุคคล/บัตรประชาชนเลขที่</label>
                 <div class="col-3">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-license" name="ContractorLicenseNumber" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-license" name="ContractorLicenseNumber" value="114141121854">
                 </div>
             </div>
             <div class="row pt-2">
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">ที่อยู่</label>
                 <div class="col-5 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-address" name="ContractorAddress" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-address" name="ContractorAddress" value="212/212 ถนน..">
                 </div>
                 <label for="" class="col-1 col-form-label form-control-sm text-end text-dark">โทร</label>
                 <div class="col-3 ">
-                    <input type="text" class="form-control form-control-sm" id="txt-contractor-tel" name="ContractorTel" value="">
+                    <input type="text" class="form-control form-control-sm" id="txt-contractor-tel" name="ContractorTel" value="022154211">
                 </div>
             </div>
             <div class="row pt-4 fs-14">
@@ -401,8 +403,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" class="form-control" id="txt-contract-description" name="DescriptionOfWork" value=""></td>
-                                <td><input type="text" class="form-control" id="txt-contract-worksite" name="WorkSite" value=""></td>
+                                <td><input type="text" class="form-control" id="txt-contract-description" name="DescriptionOfWork" value="งานก่อฉาบ"></td>
+                                <td><input type="text" class="form-control" id="txt-contract-worksite" name="WorkSite" value="หลังเรือนจำ"></td>
                                 <td class="align-middle text-red text-center fs-16 fw-bold"><div id="label-contract-summary">0.00</div><input type="hidden" id="contract-summary" name="ContractValue" value="0" /></td>
                             </tr>
                         </tbody>
@@ -463,7 +465,7 @@
                         <tbody>
                             <tr>
                                 <td colspan="2" class="align-middle fs-16 text-end fw-bold">รวม</td>
-                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent" /></td>
+                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent" value="0"/></td>
                                 <td class="align-middle text-red fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-total">0.00</p><input type="hidden" id="withdraw-sum-total" /></td>
                                 <td class="bg-gray">
                                 </td>
@@ -494,7 +496,7 @@
                 <div class="col-12 text-center">
                     <hr class="mt-4 mb-1" />
                     <hr class="mt-1 mb-3" />
-                    <button id="btn-print" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</button>
+                    <a id="btn-print" href="@Url.Action("PrintCreatePDF","Contract")" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
                     <button id="btn-save" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">บันทึก</button>
                 </div>
             </div>

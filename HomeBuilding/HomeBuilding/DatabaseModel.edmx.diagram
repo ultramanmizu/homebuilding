@@ -16,6 +16,7 @@
         <EntityTypeShape EntityType="HomeBuildingModel.UnitPrice" Width="1.5" PointX="3" PointY="5.75" />
         <EntityTypeShape EntityType="HomeBuildingModel.Receipt" Width="1.5" PointX="3.375" PointY="10.75" />
         <EntityTypeShape EntityType="HomeBuildingModel.ReceiptDetail" Width="1.5" PointX="5.375" PointY="10.75" />
+        <EntityTypeShape EntityType="HomeBuildingModel.Withdraw" Width="1.75" PointX="9.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

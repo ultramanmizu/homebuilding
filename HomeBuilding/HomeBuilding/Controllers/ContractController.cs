@@ -6,6 +6,11 @@ using System.Web.Mvc;
 using System.Threading.Tasks;
 using System.Data.Linq.SqlClient;
 using System.Globalization;
+using HomeBuilding.Models;
+
+using ZetPDF.Pdf;
+using ZetPDF.Drawing;
+using System.IO;
 
 namespace HomeBuilding.Controllers
 {
@@ -28,8 +33,48 @@ namespace HomeBuilding.Controllers
             //ViewBag.MadeAt = "บริษัท เนเจอร์ เอ็ซเทท จำกัด";
             ViewBag.CreateDate = DateTime.Now.ToString("dd/MM/yyyy");
 
+            List<TopMenu> menus = new List<TopMenu>();
+            menus.Add(new TopMenu() { Seq = 1, Title = "สรุป", Link = Url.Action("Summary", "Receipt") });
+            menus.Add(new TopMenu() { Seq = 2, Title = "ค้นหา", Link = Url.Action("Search", "Receipt") });
+            MenuView menu = new MenuView();
+            menu.TopMenus = menus;
+
+            return View("Create", menu);
+        }
+
+        public ActionResult PrintCreatePDF() {
+            PdfDocument document = new PdfDocument();
+
+            // Create new page
+            PdfPage page = document.AddPage();
+            page.Size = ZetPDF.PageSize.A4;
+
+            // Get an XGraphics object for drawing
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.Always);
+
+            // Create a font
+            XFont font = new XFont("Tahoma", 20, XFontStyle.BoldItalic);
+
+            // Draw the text
+            gfx.DrawString("ภาษาไทย", font, XBrushes.Black,
+              new XRect(0, 0, page.Width, page.Height),
+              XStringFormats.Center);
+
+            // Send PDF to browser
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream, false);
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-length", stream.Length.ToString());
+            Response.BinaryWrite(stream.ToArray());
+            Response.Flush();
+            stream.Close();
+            Response.End();
             return View();
         }
+
         public HtmlString GetDescriptionForm(int i, int line_no)
         {
             string pathImageDel = Url.Content("~/Content/images/icons/delete_remove_icon.svg");
@@ -227,23 +272,7 @@ namespace HomeBuilding.Controllers
                 line++;
             }
             //withdram
-            if(form["array_withdraw"] != "") {
-                //create receipt
-                Receipt receipt = new Receipt() {
-                    Id = Guid.NewGuid(),
-                    ConstructionContractId = contract.Id,
-                    ReceiptDate = DateTime.Now.Date,
-                    ReceiptNumber = db.usp_get_document_number("Receipt", string.Concat("R-", DateTime.Now.Year.ToString(), "-"), 6).FirstOrDefault(),
-                    CreatedById = new Guid(form["CreatedById"]),
-                    CreatedDate = DateTime.Now,
-                    UpdatedById = new Guid(form["CreatedById"]),
-                    UpdatedDate = DateTime.Now,
-                    IsEnabled = true,
-                    Total = 0,
-                    Round = 1
-                };
-                
-
+            if(form["array_withdraw"] != "") {              
                 string[] arrayWithdraw = form["array_withdraw"].Split(',');
                 line = 1;
                 MasterData masterData = db.MasterDatas.Where(x => x.Key == "withdraw" && x.IsEnabled == true && x.IsDeleted == false).OrderByDescending(o => o.Sequence).FirstOrDefault();
@@ -275,10 +304,10 @@ namespace HomeBuilding.Controllers
                     {
                         detail = form["withdraw-" + wdIndex];
                     }
-                    ReceiptDetail withdraw = new ReceiptDetail()
+                    Withdraw withdraw = new Withdraw()
                     {
                         Id = Guid.NewGuid(),
-                        ReceiptId = receipt.Id,
+                        ConstructionContractId = contract.Id,
                         LineNo = line,
                         Sequence = line,
                         Detail = detail,
@@ -290,11 +319,11 @@ namespace HomeBuilding.Controllers
                         UpdatedDate = DateTime.Now,
                         IsEnabled = true
                     };
-                    db.ReceiptDetails.Add(withdraw);
+                    db.Withdraws.Add(withdraw);
                     line++;
-                    receipt.Total += withdraw.Total;
+                    //receipt.Total += withdraw.Total;
                 }
-                db.Receipts.Add(receipt);
+                //db.Receipts.Add(receipt);
             }
             db.SaveChanges();
 
@@ -313,7 +342,7 @@ namespace HomeBuilding.Controllers
             string html = "";
             if (name == "" && description == "" && worksite == "")
             {
-                html = "<tr><td colspan=\"6\" class=\"text-center\">ไม่มีรายการ</td></tr>";
+                html = "<tr><td colspan=\"7\" class=\"text-center\">ไม่มีรายการ</td></tr>";
             }
             else
             {
@@ -339,13 +368,13 @@ namespace HomeBuilding.Controllers
                 {
                     foreach (var item in contracts)
                     {
-                        html += string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>",
-                            item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite);
+                        html += string.Format("<tr><td><input class=\"form-check-input p-0 m-0\" type=\"radio\" name=\"selected\" value=\"{6}\"></td><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>",
+                            item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite,item.Id);
                     }
                 }
                 else
                 {
-                    html = " <tr><td colspan=\"6\" class=\"text-center\">ไม่มีรายการ</td></tr>";
+                    html = " <tr><td colspan=\"7\" class=\"text-center\">ไม่มีรายการ</td></tr>";
                 }
             }
             return new HtmlString(html);
@@ -410,11 +439,11 @@ namespace HomeBuilding.Controllers
                                 if (line == 1)
                                 {
                                     html += string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td><a href=\"{9}\">{7}</a></td><td>{8}</td></tr>",
-                                    item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite , receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total) , String.Format("{0}?id={1}", Url.Action("print", "Receipt"), receipt.Id));
+                                    item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite , receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total) , String.Format("{0}?id={1}", Url.Action("PrintPDF", "Receipt"), receipt.Id));
                                 }
                                 else {
                                     html += string.Format("<tr><td colspan=\"6\"></td><td>{0}</td><td><a href=\"{3}\">{1}</a></td><td>{2}</td></tr>",
-                                    receipt.Round, receipt.ReceiptNumber, receipt.Total, String.Format("{0}?id={1}", Url.Action("print", "Receipt"), receipt.Id));
+                                    receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total), String.Format("{0}?id={1}", Url.Action("print", "Receipt"), receipt.Id));
                                 }
                                 line++;
                             }

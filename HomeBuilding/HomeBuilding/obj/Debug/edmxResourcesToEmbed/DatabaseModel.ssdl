@@ -246,6 +246,27 @@
     <Property Name="DeletedById" Type="uniqueidentifier" />
     <Property Name="DeletedDate" Type="datetime" />
   </EntityType>
+  <EntityType Name="Withdraw">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ConstructionContractId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="LineNo" Type="int" Nullable="false" />
+    <Property Name="Detail" Type="nvarchar" MaxLength="1000" />
+    <Property Name="Percent" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Total" Type="decimal" Precision="16" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="250" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="IsEnabled" Type="bit" Nullable="false" />
+    <Property Name="IsDeleted" Type="bit" Nullable="false" />
+    <Property Name="CreatedById" Type="uniqueidentifier" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedById" Type="uniqueidentifier" />
+    <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+    <Property Name="DeletedById" Type="uniqueidentifier" />
+    <Property Name="DeletedDate" Type="datetime" />
+  </EntityType>
   <Function Name="usp_get_document_number" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Key" Type="nvarchar" Mode="In" />
     <Parameter Name="Prefix" Type="nvarchar" Mode="In" />
@@ -263,5 +284,6 @@
     <EntitySet Name="RunningNumber" EntityType="Self.RunningNumber" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UnitPrice" EntityType="Self.UnitPrice" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Withdraw" EntityType="Self.Withdraw" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

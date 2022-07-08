@@ -1,5 +1,5 @@
-﻿
-@{
+﻿@{
+
     ViewBag.Title = "Search";
     Layout = "~/Views/Shared/_LayoutReceipt.cshtml";
 }
@@ -13,6 +13,12 @@
 
             $("#btn-search").click(function () {
                 $("#btn-search").prop('disabled', true);
+                const lbName = $("#name").val() === "" ? "ผู้ว่าจ้าง -" : "ผู้ว่าจ้าง " + $("#name").val() ;
+                const lbStartDate = $("#from").val() === "" ? "ประจำวันที่ -" : "ประจำวันที่ " + $("#from").val();
+                const lbEndDate = $("#to").val() === "" ? "ถึงวันที่ -" : "ถึงวันที่ " + $("#to").val();
+                $("#label-search-name").html(lbName);
+                $("#label-search-startdate").html(lbStartDate);
+                $("#label-search-enddate").html(lbEndDate);
                 $.post("@Url.Action("ListContractSummarySearch", "Contract")", $("#form-search").serialize(), function (html) {
                     $("#tbody-search").html(html);
                     $("#btn-search").prop('disabled', false);
@@ -24,10 +30,60 @@
             if ($("#name").val() != "") {
                 $("#btn-search").click();
             }
+
+            $("#btn-print").click(function () {
+                PrintFromHTML();
+            });
         });
         function currency(number) {
             return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
         };
+
+
+        function PrintFromHTML() {
+
+            const doc = new jsPDF('l', 'mm', [297, 210]);
+
+            const margins = {
+                top: 30,
+                bottom: 10,
+                left: 15,
+                width: 297
+            };
+
+            doc.addFont('THSarabunNew.ttf', 'THSarabunNew', 'normal');
+            doc.setFont('THSarabunNew');
+            doc.setFontSize(18);
+
+            doc.text(15, 15, $("#label-search-name").html());
+            doc.text(190, 15, $("#label-search-startdate").html());
+            doc.text(245, 15, $("#label-search-enddate").html());
+
+
+            var source = $("#label-search-name").html();
+            var specialElementHandlers = {
+                '#elementH': function (element, renderer) {
+                    return true;
+                }
+            };
+            doc.fromHTML(
+                source,
+                margins.left,
+                margins.top, {
+                    'width': margins.width,
+                    'elementHandlers': specialElementHandlers
+            });
+            var table = "<table><thead><tr><th>หมายเลขสัญญา</th><th>วันที่บันทึก</th><th>ชื่อผู้ว่าจ้าง</th><th>ชื่อผู้รับจ้าง</th><th>รายละเอียดงานที่ว่าจ้าง</th><th>หน้างานโครงการ</th><th>รายการที่รอบนี้</th><th>หมายเลขใบเสร็จ</th><th>จำนวน(บาท)</th></tr></thead></table>";
+            doc.fromHTML(
+                table,
+                16,
+                80, {
+                'width': margins.width,
+                'elementHandlers': specialElementHandlers
+            });
+
+            doc.save('Summary.pdf');
+        }
     </script>
 }
 
@@ -40,7 +96,7 @@
                     <div class="pt-2 mb-1 row justify-content-center">
                         <label for="name" class="col-2 col-form-label form-control-sm text-end text-dark">ผู้ว่าจ้าง:</label>
                         <div class="col-sm-5 ">
-                            <input type="text" class="form-control form-control-sm" id="name" name="name" value="@ViewBag.OwnerName">
+                            <input type="text" class="form-control form-control-sm" id="name" name="name" value="นาย" placeholder="@ViewBag.OwnerName">
                         </div>
                     </div>
                     <div class="mb-1 row justify-content-md-center">
@@ -64,41 +120,43 @@
                         <hr class="mt-1 mb-3" />
                     </div>
                 </div>
-                <div class="row ps-12 pe-4 fs-16 m-0 pt-4 pb-1 text-dark">
-                    <p class="col-6 m-0 text-start">
-                        ผู้ว่าจ้าง นาย สสสส สส
-                    </p>
-                    <p class="col-3 m-0">
-                        ประจำวันที่ 20/10/2022
-                    </p>
-                    <p class="col-3 m-0">
-                        ถึงวันที่ 20/10/2022
-                    </p>
-                </div>
-                <div class="row">
-                    <div class="col-12 ps-10 pe-10">
-                        <table class="table table-bordered fs-14 ">
-                            <thead style="background-color:#BDCDFF;color:#525DFF">
-                                <tr>
-                                    <th scope="col">หมายเลขสัญญา</th>
-                                    <th scope="col">วันที่บันทึก</th>
-                                    <th scope="col">ชื่อผู้ว่าจ้าง</th>
-                                    <th scope="col">ชื่อผู้รับจ้าง</th>
-                                    <th scope="col">รายละเอียดงานที่ว่าจ้าง</th>
-                                    <th scope="col">หน้างานโครงการ</th>
-                                    <th scope="col">รายการที่รอบนี้</th>
-                                    <th scope="col">หมายเลขใบเสร็จ</th>
-                                    <th scope="col">จำนวน(บาท)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-search">
-                                <tr>
-                                    <td colspan="9" class="text-center">ไม่มีรายการ</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="col-12 pt-0 pe-0 text-end text-dark">
-                            <p class="fs-16 m-0" id="label-sum-total">รวมรายการที่เบิกทั้งหมด: 0.00 บาท</p>
+                <div id="div-print">
+                    <div class="row ps-12 pe-4 fs-16 m-0 pt-4 pb-1 text-dark">
+                        <p class="col-6 m-0 text-start" id="label-search-name">
+                            ผู้ว่าจ้าง -
+                        </p>
+                        <p class="col-3 m-0" id="label-search-startdate">
+                            ประจำวันที่ -
+                        </p>
+                        <p class="col-3 m-0" id="label-search-enddate">
+                            ถึงวันที่ -
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 ps-10 pe-10">
+                            <table class="table table-bordered fs-14 ">
+                                <thead style="background-color:#BDCDFF;color:#525DFF">
+                                    <tr>
+                                        <th scope="col">หมายเลขสัญญา</th>
+                                        <th scope="col">วันที่บันทึก</th>
+                                        <th scope="col">ชื่อผู้ว่าจ้าง</th>
+                                        <th scope="col">ชื่อผู้รับจ้าง</th>
+                                        <th scope="col">รายละเอียดงานที่ว่าจ้าง</th>
+                                        <th scope="col">หน้างานโครงการ</th>
+                                        <th scope="col">รายการที่รอบนี้</th>
+                                        <th scope="col">หมายเลขใบเสร็จ</th>
+                                        <th scope="col">จำนวน(บาท)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-search">
+                                    <tr>
+                                        <td colspan="9" class="text-center">ไม่มีรายการ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-12 pt-0 pe-0 text-end text-dark">
+                                <p class="fs-16 m-0" id="label-sum-total">รวมรายการที่เบิกทั้งหมด: 0.00 บาท</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,7 +164,7 @@
                     <div class="col-12">
                         <hr class="mt-10 mb-1" />
                         <hr class="mt-1 mb-3" />
-                        <a href="@Url.Action("print", "Receipt")" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
+                        <button id="btn-print" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</button>
                     </div>
                 </div>
             </div>

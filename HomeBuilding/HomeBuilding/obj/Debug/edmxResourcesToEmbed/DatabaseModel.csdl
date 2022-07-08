@@ -200,6 +200,7 @@
     <EntitySet Name="UnitPrices" EntityType="HomeBuildingModel.UnitPrice" />
     <EntitySet Name="Receipts" EntityType="HomeBuildingModel.Receipt" />
     <EntitySet Name="ReceiptDetails" EntityType="HomeBuildingModel.ReceiptDetail" />
+    <EntitySet Name="Withdraws" EntityType="HomeBuildingModel.Withdraw" />
   </EntityContainer>
   <ComplexType Name="GetDocumentNumber_Result">
     <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
@@ -252,6 +253,27 @@
     </Key>
     <Property Name="Id" Type="Guid" Nullable="false" />
     <Property Name="ReceiptId" Type="Guid" Nullable="false" />
+    <Property Name="LineNo" Type="Int32" Nullable="false" />
+    <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+    <Property Name="Percent" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+    <Property Name="Total" Type="Decimal" Nullable="false" Precision="16" Scale="2" />
+    <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Sequence" Type="Int32" Nullable="false" />
+    <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <Property Name="CreatedById" Type="Guid" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedById" Type="Guid" />
+    <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="DeletedById" Type="Guid" />
+    <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Withdraw">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Guid" Nullable="false" />
+    <Property Name="ConstructionContractId" Type="Guid" Nullable="false" />
     <Property Name="LineNo" Type="Int32" Nullable="false" />
     <Property Name="Detail" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
     <Property Name="Percent" Type="Decimal" Nullable="false" Precision="16" Scale="2" />

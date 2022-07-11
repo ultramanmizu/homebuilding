@@ -29,15 +29,32 @@
                 }
             });
 
-            $("#form-print").submit(() => {
+            //$("#form-print").submit(() => {
+            //    var isValidate = true;
+            //    if ($("#txt-amount").val() === "" || $("#txt-amount").val() === "0") { $("#txt-amount").addClass("border-danger"); isValidate = false; }
+            //    else { $("#txt-amount").removeClass("border-danger"); }
+
+            //    return isValidate;
+            //});
+
+            $("#btn-print").click(() => {
                 var isValidate = true;
                 if ($("#txt-amount").val() === "" || $("#txt-amount").val() === "0") { $("#txt-amount").addClass("border-danger"); isValidate = false; }
                 else { $("#txt-amount").removeClass("border-danger"); }
 
-                return isValidate;
+                if (isValidate) {
+                    if (confirm("ยืนยันการบันทึกข้อมูล")) {
+                        $("#btn-print").prop('disabled', true);
+                        $("#form-print").submit();
+                        setTimeout(goto, 5000);
+                    }
+                }
             });
-           
         });
+
+        function goto() {
+            window.location.href = "@Url.Action("Search", "Receipt")"
+        }
 
         function currency(number) {
             return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2 }).format(number);
@@ -172,7 +189,7 @@
                 <div class="col-12 pe-10">
                     <hr class="mt-4 mb-1" />
                     <hr class="mt-1 mb-3" />
-                    <button id="btn-print" type="submit" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</button>
+                    <button id="btn-print" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</button>
                 </div>
             </div>
         </form>

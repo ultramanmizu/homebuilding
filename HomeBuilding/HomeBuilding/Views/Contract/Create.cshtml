@@ -57,9 +57,25 @@
                 var isValidate = validator();
                 if (isValidate) {
                     if (confirm("ยืนยันการบันทึก")) {
+                        $("#btn-print , #btn-save").prop('disabled', true);
                         $("#array_description").val(array_description);
                         $("#array_withdraw").val(array_withdraw);
                         $("#form-create").submit();
+                    }
+                }
+                return false;
+            });
+
+            $("#btn-print").click(function () {
+                var isValidate = validator();
+                if (isValidate) {
+                    if (confirm("ยืนยันการบันทึก")) {
+                        $("#btn-print , #btn-save").prop('disabled', true);
+                        $("#array_description").val(array_description);
+                        $("#array_withdraw").val(array_withdraw);
+                        $("#is-print").val("Y");
+                        $("#form-create").submit();
+                        setTimeout(goto, 5000);
                     }
                 }
                 return false;
@@ -69,6 +85,10 @@
                 $("#lable-madeat").html("ทำที่ : " + $(this).val());
             });
         });
+
+        function goto() {
+            window.location.href = "@Url.Action("Summary","Receipt")"
+        }
 
         function RemoveDescription(i) {
             if (confirm("ยืนยันการลบ")) {
@@ -329,6 +349,7 @@
     <form id="form-create" method="post" action="@Url.Action("PostCreate", "Contract")">
         <input type="hidden" id="array_description" name="array_description" />
         <input type="hidden" id="array_withdraw" name="array_withdraw" />
+        <input type="hidden" id="is-print" name="print" value="N" />
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-12 pt-8 text-center">
@@ -465,7 +486,7 @@
                         <tbody>
                             <tr>
                                 <td colspan="2" class="align-middle fs-16 text-end fw-bold">รวม</td>
-                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent" value="0"/></td>
+                                <td class="align-middle fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-percent">0%</p><input type="hidden" id="withdraw-sum-percent" value="0" /></td>
                                 <td class="align-middle text-red fs-16 text-center fw-bold"><p class="p-0 m-0" id="label-withdraw-sum-total">0.00</p><input type="hidden" id="withdraw-sum-total" /></td>
                                 <td class="bg-gray">
                                 </td>
@@ -496,7 +517,7 @@
                 <div class="col-12 text-center">
                     <hr class="mt-4 mb-1" />
                     <hr class="mt-1 mb-3" />
-                    <a id="btn-print" href="@Url.Action("PrintCreatePDF","Contract")" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</a>
+                    <button id="btn-print" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">พิมพ์</button>
                     <button id="btn-save" class="btn btn-sm rounded-pill btn-gradient gradient-6 mb-8 me-1 w-18 fs-16 pt-1 pb-1">บันทึก</button>
                 </div>
             </div>

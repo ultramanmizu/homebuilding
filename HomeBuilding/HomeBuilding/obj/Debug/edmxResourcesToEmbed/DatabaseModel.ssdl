@@ -267,10 +267,24 @@
     <Property Name="DeletedById" Type="uniqueidentifier" />
     <Property Name="DeletedDate" Type="datetime" />
   </EntityType>
+  <Function Name="usp_get_contract_description" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ContractId" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="usp_get_contract_receipt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="OwnerName" Type="nvarchar" Mode="In" />
+    <Parameter Name="StartDate" Type="datetime" Mode="In" />
+    <Parameter Name="EndDate" Type="datetime" Mode="In" />
+  </Function>
+  <Function Name="usp_get_contract_withdraw" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ContractId" Type="nvarchar" Mode="In" />
+  </Function>
   <Function Name="usp_get_document_number" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Key" Type="nvarchar" Mode="In" />
     <Parameter Name="Prefix" Type="nvarchar" Mode="In" />
     <Parameter Name="Digit" Type="int" Mode="In" />
+  </Function>
+  <Function Name="usp_get_receipt_history" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="ReceiptId" Type="nvarchar" Mode="In" />
   </Function>
   <EntityContainer Name="HomeBuildingModelStoreContainer">
     <EntitySet Name="ConstructionContract" EntityType="Self.ConstructionContract" Schema="dbo" store:Type="Tables" />

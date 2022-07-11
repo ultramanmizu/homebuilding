@@ -272,10 +272,24 @@
           <Property Name="DeletedById" Type="uniqueidentifier" />
           <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
+        <Function Name="usp_get_contract_description" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ContractId" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="usp_get_contract_receipt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OwnerName" Type="nvarchar" Mode="In" />
+          <Parameter Name="StartDate" Type="datetime" Mode="In" />
+          <Parameter Name="EndDate" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="usp_get_contract_withdraw" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ContractId" Type="nvarchar" Mode="In" />
+        </Function>
         <Function Name="usp_get_document_number" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Key" Type="nvarchar" Mode="In" />
           <Parameter Name="Prefix" Type="nvarchar" Mode="In" />
           <Parameter Name="Digit" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_get_receipt_history" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ReceiptId" Type="nvarchar" Mode="In" />
         </Function>
         <EntityContainer Name="HomeBuildingModelStoreContainer">
           <EntitySet Name="ConstructionContract" EntityType="Self.ConstructionContract" Schema="dbo" store:Type="Tables" />
@@ -496,6 +510,20 @@
           <EntitySet Name="Receipts" EntityType="HomeBuildingModel.Receipt" />
           <EntitySet Name="ReceiptDetails" EntityType="HomeBuildingModel.ReceiptDetail" />
           <EntitySet Name="Withdraws" EntityType="HomeBuildingModel.Withdraw" />
+          <FunctionImport Name="usp_get_contract_description" ReturnType="Collection(HomeBuildingModel.usp_get_contract_description_Result)">
+            <Parameter Name="ContractId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_get_contract_receipt" ReturnType="Collection(HomeBuildingModel.usp_get_contract_receipt_Result)">
+            <Parameter Name="OwnerName" Mode="In" Type="String" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_get_contract_withdraw" ReturnType="Collection(HomeBuildingModel.usp_get_contract_withdraw_Result)">
+            <Parameter Name="ContractId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_get_receipt_history" ReturnType="Collection(HomeBuildingModel.usp_get_receipt_history_Result)">
+            <Parameter Name="ReceiptId" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="GetDocumentNumber_Result">
           <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
@@ -584,6 +612,94 @@
           <Property Name="DeletedById" Type="Guid" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <ComplexType Name="usp_get_contract_description_Result">
+          <Property Type="Guid" Name="Id" Nullable="false" />
+          <Property Type="Guid" Name="ConstructionContractId" Nullable="false" />
+          <Property Type="Int32" Name="LineNo" Nullable="false" />
+          <Property Type="String" Name="Detail" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="Quantity" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Unit" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="UnitPrice" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+          <Property Type="Int32" Name="Sequence" Nullable="false" />
+          <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Guid" Name="CreatedById" Nullable="true" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+          <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="DeletedById" Nullable="true" />
+          <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="usp_get_contract_receipt_Result">
+          <Property Type="Guid" Name="Id" Nullable="false" />
+          <Property Type="String" Name="ContractNumber" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="ContractDate" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="MadeAt" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="OwnerName" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="OwnerAddress" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="OwnerTel" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OwnerNumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ContractorName" Nullable="true" MaxLength="250" />
+          <Property Type="String" Name="ContractorAddress" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="ContractorTel" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ContractorLicenseNumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="DescriptionOfWork" Nullable="true" MaxLength="2000" />
+          <Property Type="String" Name="WorkSite" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="ContractValue" Nullable="true" MaxLength="4000" />
+          <Property Type="Guid" Name="ReceiptId" Nullable="true" />
+          <Property Type="Int32" Name="Round" Nullable="true" />
+          <Property Type="String" Name="ReceiptNumber" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="ReceiptDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+          <Property Type="Int32" Name="Sequence" Nullable="false" />
+          <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Guid" Name="CreatedById" Nullable="true" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+          <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="DeletedById" Nullable="true" />
+          <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="usp_get_contract_withdraw_Result">
+          <Property Type="Guid" Name="Id" Nullable="false" />
+          <Property Type="Guid" Name="ConstructionContractId" Nullable="false" />
+          <Property Type="Int32" Name="LineNo" Nullable="false" />
+          <Property Type="String" Name="Detail" Nullable="true" MaxLength="1000" />
+          <Property Type="String" Name="Percent" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+          <Property Type="Int32" Name="Sequence" Nullable="false" />
+          <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Guid" Name="CreatedById" Nullable="true" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+          <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="DeletedById" Nullable="true" />
+          <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="usp_get_receipt_history_Result">
+          <Property Type="Guid" Name="Id" Nullable="false" />
+          <Property Type="Guid" Name="ConstructionContractId" Nullable="false" />
+          <Property Type="Int32" Name="Round" Nullable="true" />
+          <Property Type="String" Name="ReceiptNumber" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReceiptDate" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+          <Property Type="Int32" Name="Sequence" Nullable="false" />
+          <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+          <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+          <Property Type="Guid" Name="CreatedById" Nullable="true" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+          <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+          <Property Type="Guid" Name="DeletedById" Nullable="true" />
+          <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -870,6 +986,110 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="usp_get_contract_description" FunctionName="HomeBuildingModel.Store.usp_get_contract_description">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HomeBuildingModel.usp_get_contract_description_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ConstructionContractId" ColumnName="ConstructionContractId" />
+                <ScalarProperty Name="LineNo" ColumnName="LineNo" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Unit" ColumnName="Unit" />
+                <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_get_contract_receipt" FunctionName="HomeBuildingModel.Store.usp_get_contract_receipt">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HomeBuildingModel.usp_get_contract_receipt_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ContractNumber" ColumnName="ContractNumber" />
+                <ScalarProperty Name="ContractDate" ColumnName="ContractDate" />
+                <ScalarProperty Name="MadeAt" ColumnName="MadeAt" />
+                <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
+                <ScalarProperty Name="OwnerAddress" ColumnName="OwnerAddress" />
+                <ScalarProperty Name="OwnerTel" ColumnName="OwnerTel" />
+                <ScalarProperty Name="OwnerNumber" ColumnName="OwnerNumber" />
+                <ScalarProperty Name="ContractorName" ColumnName="ContractorName" />
+                <ScalarProperty Name="ContractorAddress" ColumnName="ContractorAddress" />
+                <ScalarProperty Name="ContractorTel" ColumnName="ContractorTel" />
+                <ScalarProperty Name="ContractorLicenseNumber" ColumnName="ContractorLicenseNumber" />
+                <ScalarProperty Name="DescriptionOfWork" ColumnName="DescriptionOfWork" />
+                <ScalarProperty Name="WorkSite" ColumnName="WorkSite" />
+                <ScalarProperty Name="ContractValue" ColumnName="ContractValue" />
+                <ScalarProperty Name="ReceiptId" ColumnName="ReceiptId" />
+                <ScalarProperty Name="Round" ColumnName="Round" />
+                <ScalarProperty Name="ReceiptNumber" ColumnName="ReceiptNumber" />
+                <ScalarProperty Name="ReceiptDate" ColumnName="ReceiptDate" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_get_contract_withdraw" FunctionName="HomeBuildingModel.Store.usp_get_contract_withdraw">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HomeBuildingModel.usp_get_contract_withdraw_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ConstructionContractId" ColumnName="ConstructionContractId" />
+                <ScalarProperty Name="LineNo" ColumnName="LineNo" />
+                <ScalarProperty Name="Detail" ColumnName="Detail" />
+                <ScalarProperty Name="Percent" ColumnName="Percent" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_get_receipt_history" FunctionName="HomeBuildingModel.Store.usp_get_receipt_history">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HomeBuildingModel.usp_get_receipt_history_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ConstructionContractId" ColumnName="ConstructionContractId" />
+                <ScalarProperty Name="Round" ColumnName="Round" />
+                <ScalarProperty Name="ReceiptNumber" ColumnName="ReceiptNumber" />
+                <ScalarProperty Name="ReceiptDate" ColumnName="ReceiptDate" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedById" ColumnName="CreatedById" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedById" ColumnName="UpdatedById" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="DeletedById" ColumnName="DeletedById" />
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

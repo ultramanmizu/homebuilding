@@ -56,5 +56,49 @@ namespace HomeBuilding
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("usp_get_document_number", keyParameter, prefixParameter, digitParameter);
         }
+    
+        public virtual ObjectResult<usp_get_contract_description_Result> usp_get_contract_description(string contractId)
+        {
+            var contractIdParameter = contractId != null ?
+                new ObjectParameter("ContractId", contractId) :
+                new ObjectParameter("ContractId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_get_contract_description_Result>("usp_get_contract_description", contractIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_get_contract_receipt_Result> usp_get_contract_receipt(string ownerName, Nullable<System.DateTime> startDate, Nullable<System.DateTime> endDate)
+        {
+            var ownerNameParameter = ownerName != null ?
+                new ObjectParameter("OwnerName", ownerName) :
+                new ObjectParameter("OwnerName", typeof(string));
+    
+            var startDateParameter = startDate.HasValue ?
+                new ObjectParameter("StartDate", startDate) :
+                new ObjectParameter("StartDate", typeof(System.DateTime));
+    
+            var endDateParameter = endDate.HasValue ?
+                new ObjectParameter("EndDate", endDate) :
+                new ObjectParameter("EndDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_get_contract_receipt_Result>("usp_get_contract_receipt", ownerNameParameter, startDateParameter, endDateParameter);
+        }
+    
+        public virtual ObjectResult<usp_get_contract_withdraw_Result> usp_get_contract_withdraw(string contractId)
+        {
+            var contractIdParameter = contractId != null ?
+                new ObjectParameter("ContractId", contractId) :
+                new ObjectParameter("ContractId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_get_contract_withdraw_Result>("usp_get_contract_withdraw", contractIdParameter);
+        }
+    
+        public virtual ObjectResult<usp_get_receipt_history_Result> usp_get_receipt_history(string receiptId)
+        {
+            var receiptIdParameter = receiptId != null ?
+                new ObjectParameter("ReceiptId", receiptId) :
+                new ObjectParameter("ReceiptId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_get_receipt_history_Result>("usp_get_receipt_history", receiptIdParameter);
+        }
     }
 }

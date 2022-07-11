@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text;
 using HomeBuilding.Models;
+using Microsoft.Reporting.WebForms;
 
 namespace HomeBuilding.Controllers
 {
@@ -40,7 +41,7 @@ namespace HomeBuilding.Controllers
 
             ConstructionContract contract = db.ConstructionContracts.Find(id);
             if (contract == null) { return RedirectToAction("Search", "Receipt"); }
-            List<Receipt> receipts = db.Receipts.Where(x=>x.ConstructionContractId == contract.Id).ToList();
+            List<Receipt> receipts = db.Receipts.Where(x => x.ConstructionContractId == contract.Id).ToList();
             decimal receiptTotal = 0;
             int receiptSeq = 1;
             foreach (var receipt in receipts) { receiptTotal += receipt.Total; receiptSeq++; }
@@ -63,12 +64,54 @@ namespace HomeBuilding.Controllers
             return View("Print", menu);
         }
 
-        [HttpPost]
-        public ActionResult Create(FormCollection form) {
+        [HttpGet]
+        public FileResult DownloadPDF(Guid? id)
+        {
+            Receipt receipt = db.Receipts.Find(id);
+            ConstructionContract contract = db.ConstructionContracts.Find(receipt.ConstructionContractId);
+            User creator = db.Users.Find(receipt.CreatedById);
 
+            decimal total = receipt.Total;
+            var ReceiptHistory = db.usp_get_receipt_history(id.ToString()).ToList();
+            foreach (var item in ReceiptHistory) { total += Convert.ToDecimal(item.Total); }
+            decimal remain = Convert.ToDecimal(contract.ContractValue) - total;
+
+            ReportParameter[] param = new ReportParameter[17];
+            param[0] = new ReportParameter("ReceiptNumber", receipt.ReceiptNumber);
+            param[1] = new ReportParameter("ContractorName", contract.ContractorName);
+            param[2] = new ReportParameter("ContractorAddress", contract.ContractorAddress);
+            param[3] = new ReportParameter("ContractorTel", contract.ContractorTel);
+            param[4] = new ReportParameter("ReceiptDate", receipt.ReceiptDate?.ToString("dd/MM/yyyy"));
+            param[5] = new ReportParameter("OwnerName", contract.OwnerName);
+            param[6] = new ReportParameter("OwnerAddress", contract.OwnerAddress);
+            param[7] = new ReportParameter("OwnerTel", contract.OwnerTel);
+            param[8] = new ReportParameter("DescriptionOfWork", contract.DescriptionOfWork);
+            param[9] = new ReportParameter("WorkSite", contract.WorkSite);
+            param[10] = new ReportParameter("ContractValue", String.Format("{0:n}", contract.ContractValue));
+            param[11] = new ReportParameter("ContractNumber", contract.ContractNumber);
+            param[12] = new ReportParameter("Round", receipt.Round.ToString());
+            param[13] = new ReportParameter("ReceiptValue", String.Format("{0:n}", receipt.Total));
+            param[14] = new ReportParameter("Total", String.Format("{0:n}", total));
+            param[15] = new ReportParameter("Remain", String.Format("{0:n}", remain));
+            param[16] = new ReportParameter("CreatorName", creator.FullName);
+
+            LocalReport report = new LocalReport();
+            report.ReportPath = Server.MapPath("~/Reports/Receipt.rdlc");
+            report.DataSources.Clear();
+            report.DataSources.Add(new ReportDataSource("ReceiptHistory", ReceiptHistory));
+            report.SetParameters(param);
+            byte[] bytes = report.Render("PDF");
+
+            return File(bytes, "application/pdf", string.Format("{0}.pdf", receipt.ReceiptNumber));
+        }
+
+        [HttpPost]
+        public ActionResult Create(FormCollection form)
+        {
             if (form["Number"].ToString() == "") { return RedirectToAction("Search", "Receipt"); }
 
-            Receipt receipt = new Receipt() {
+            Receipt receipt = new Receipt()
+            {
                 Id = Guid.NewGuid(),
                 ConstructionContractId = new Guid(form["ContractId"]),
                 ReceiptDate = DateTime.Now.Date,
@@ -85,51 +128,9 @@ namespace HomeBuilding.Controllers
             db.Receipts.Add(receipt);
             db.SaveChanges();
 
+            return DownloadPDF(receipt.Id);
 
-            return RedirectToAction("Search", "Receipt");
-        }
-
-        //[HttpGet]
-        //public ActionResult Print(Guid? id)
-        //{
-        //    if (Session["UserProfile.Id"] == null) { return RedirectToAction("signin", "Home"); }
-        //    if (id == null) { return RedirectToAction("Summary", "Receipt"); }
-
-        //    Receipt receipt = db.Receipts.Find(id);
-        //    if (receipt == null) { return RedirectToAction("Summary", "Receipt"); }
-        //    //List<ReceiptDetail> details = db.ReceiptDetails.Where(x => x.ReceiptId == receipt.Id && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.LineNo).ToList();
-        //    ConstructionContract contract = db.ConstructionContracts.Find(receipt.ConstructionContractId);
-        //    //List<ContractDescription> contractDescriptions = db.ContractDescriptions.Where(x => x.ConstructionContractId == contract.Id && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.LineNo).ToList();
-
-        //    List<Receipt> receiptOthers = db.Receipts.Where(x=>x.ConstructionContractId == contract.Id && x.Id != receipt.Id && x.IsEnabled == true && x.IsDeleted == false).OrderBy(o => o.Round).ToList();
-        //    decimal withdrawTotal = receipt.Total;
-        //    foreach (var receiptOther in receiptOthers) { withdrawTotal = +receiptOther.Total; }
-
-        //    User creator = db.Users.Find(receipt.CreatedById);
-
-        //    ViewBag.Receipt = receipt;
-        //    //ViewBag.ReceiptDetails = details;
-        //    ViewBag.Contract = contract;
-        //    //ViewBag.ContractDescriptions = contractDescriptions;
-        //    ViewBag.ReceiptOthers = receiptOthers;
-        //    ViewBag.WithdrawTotal = withdrawTotal;
-        //    ViewBag.Remain = (decimal)contract.ContractValue - withdrawTotal;
-        //    ViewBag.Creator = creator.FullName;
-
-        //    List<TopMenu> menus = new List<TopMenu>();
-        //    menus.Add(new TopMenu() { Seq = 1, Title = "สัญญา", Link = Url.Action("Create", "Contract") });
-        //    menus.Add(new TopMenu() { Seq = 2, Title = "สรุป", Link = Url.Action("Summary", "Receipt") });
-        //    MenuView menu = new MenuView();
-        //    menu.TopMenus = menus;
-
-        //    return View("Print", menu);
-        //}
-
-        [HttpGet]
-        public FileResult ExportExcel(Guid? id)
-        {
-            string text = "<p>(นาย วารินทร์ เกษร)</p><p>ที่อยู่: 123/456</p><p>เบอร์โทร: 02-5146459</p><p>ใบเสร็จรับเงิน</p>";
-            return File(System.Text.Encoding.GetEncoding("TIS-620").GetBytes(text), "application/vnd.ms-excel", "Grid.xls");
+            //return RedirectToAction("Search", "Receipt");
         }
 
         public ActionResult Summary()
@@ -144,6 +145,7 @@ namespace HomeBuilding.Controllers
 
             ViewBag.OwnerName = TempData["OwnerName"]?.ToString();
             ViewBag.ContractDate = TempData["ContractDate"]?.ToString();
+
             return View("Summary", menu);
         }
 

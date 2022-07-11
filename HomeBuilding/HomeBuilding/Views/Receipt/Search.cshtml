@@ -18,7 +18,7 @@
 
             $("#btn-print-contract").click(function () {
                 if ($("input[type='radio'][name='selected']:checked").val()) {
-                    alert($("input[type='radio'][name='selected']:checked").val());
+                    window.location.href = "@Url.Action("DownloadPDF", "Contract")?id=" + $("input[type='radio'][name='selected']:checked").val();
                 }
                 else { alert("กรุณาเลือกสัญญาที่ต้องการพิมพ์"); }
             });

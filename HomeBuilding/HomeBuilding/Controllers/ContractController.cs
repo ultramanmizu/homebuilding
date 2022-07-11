@@ -11,6 +11,7 @@ using HomeBuilding.Models;
 using ZetPDF.Pdf;
 using ZetPDF.Drawing;
 using System.IO;
+using Microsoft.Reporting.WebForms;
 
 namespace HomeBuilding.Controllers
 {
@@ -40,39 +41,6 @@ namespace HomeBuilding.Controllers
             menu.TopMenus = menus;
 
             return View("Create", menu);
-        }
-
-        public ActionResult PrintCreatePDF() {
-            PdfDocument document = new PdfDocument();
-
-            // Create new page
-            PdfPage page = document.AddPage();
-            page.Size = ZetPDF.PageSize.A4;
-
-            // Get an XGraphics object for drawing
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.Always);
-
-            // Create a font
-            XFont font = new XFont("Tahoma", 20, XFontStyle.BoldItalic);
-
-            // Draw the text
-            gfx.DrawString("ภาษาไทย", font, XBrushes.Black,
-              new XRect(0, 0, page.Width, page.Height),
-              XStringFormats.Center);
-
-            // Send PDF to browser
-            MemoryStream stream = new MemoryStream();
-            document.Save(stream, false);
-            Response.Clear();
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-length", stream.Length.ToString());
-            Response.BinaryWrite(stream.ToArray());
-            Response.Flush();
-            stream.Close();
-            Response.End();
-            return View();
         }
 
         public HtmlString GetDescriptionForm(int i, int line_no)
@@ -329,6 +297,9 @@ namespace HomeBuilding.Controllers
 
             TempData["OwnerName"] = contract.OwnerName;
             TempData["ContractDate"] = contract.ContractDate.ToString("dd/MM/yyyy");
+            if (form["print"] == "Y") {
+                 return DownloadPDF(contract.Id);
+            }
             return RedirectToAction("Summary", "Receipt");
         }
 
@@ -439,11 +410,11 @@ namespace HomeBuilding.Controllers
                                 if (line == 1)
                                 {
                                     html += string.Format("<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td><a href=\"{9}\">{7}</a></td><td>{8}</td></tr>",
-                                    item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite , receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total) , String.Format("{0}?id={1}", Url.Action("PrintPDF", "Receipt"), receipt.Id));
+                                    item.ContractNumber, item.ContractDate.ToString("dd/MM/yyyy"), item.OwnerName, item.ContractorName, item.DescriptionOfWork, item.WorkSite , receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total) , String.Format("{0}?id={1}", Url.Action("DownloadPDF", "Receipt"), receipt.Id));
                                 }
                                 else {
                                     html += string.Format("<tr><td colspan=\"6\"></td><td>{0}</td><td><a href=\"{3}\">{1}</a></td><td>{2}</td></tr>",
-                                    receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total), String.Format("{0}?id={1}", Url.Action("print", "Receipt"), receipt.Id));
+                                    receipt.Round, receipt.ReceiptNumber, String.Format("{0:n}", receipt.Total), String.Format("{0}?id={1}", Url.Action("DownloadPDF", "Receipt"), receipt.Id));
                                 }
                                 line++;
                             }
@@ -461,6 +432,87 @@ namespace HomeBuilding.Controllers
             }
             html += String.Format("<input type=\"hidden\" name=\"sumtotal\" id=\"sum-total\" value=\"{0}\" />", sumTotal);
             return new HtmlString(html);
+        }
+
+        [HttpPost]
+        public FileResult DownloadSummaryPDF(FormCollection form)
+        {
+            string name = form["name"];
+            string startDate = form["startdate"] == "" ? "01/01/1753" : form["startdate"];
+            string endDate = form["enddate"] == "" ? DateTime.Now.ToString("dd/MM/yyyy") : form["enddate"];
+            decimal sumTotal = 0;
+
+            LocalReport report = new LocalReport();
+            report.ReportPath = Server.MapPath("~/Reports/Summary.rdlc");
+
+            DateTime sd = DateTime.ParseExact(startDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime ed = DateTime.ParseExact(endDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var data = db.usp_get_contract_receipt(name, sd, ed).ToList();
+
+            foreach (var item in data) {
+                sumTotal += Convert.ToDecimal(item.Total);
+            }
+
+            ReportParameter[] param = new ReportParameter[4];
+            param[0] = new ReportParameter("Name", form["name"] == "" ? "-" : form["name"]);
+            param[1] = new ReportParameter("StartDate", form["startdate"] == ""?"-": form["startdate"]);
+            param[2] = new ReportParameter("EndDate", form["enddate"] == "" ? "-" : form["enddate"]);
+            param[3] = new ReportParameter("Total", String.Format("{0:n}", sumTotal));
+
+            report.DataSources.Clear();
+            report.DataSources.Add(new ReportDataSource("DataSet", data));
+            report.SetParameters(param);
+
+            byte[] bytes = report.Render("PDF");
+
+            return File(bytes, "application/pdf", "Summary.pdf");
+        }
+        
+        [HttpGet]
+        public FileResult DownloadPDF(Guid? id)
+        {
+            ConstructionContract contract = db.ConstructionContracts.Find(id);
+            var descript = db.usp_get_contract_description(contract.Id.ToString()).ToList();
+            var withdraw = db.usp_get_contract_withdraw(contract.Id.ToString()).ToList();
+            User creator = db.Users.Find(contract.CreatedById);
+            decimal wdPercent = 0;
+            decimal wdTotal = 0;
+            foreach(var item in withdraw)
+            {
+                wdPercent += Convert.ToDecimal(item.Percent);
+                wdTotal += Convert.ToDecimal(item.Total);
+            }
+
+            LocalReport report = new LocalReport();
+            report.ReportPath = Server.MapPath("~/Reports/Contract.rdlc");
+
+            ReportParameter[] param = new ReportParameter[17];
+            param[0] = new ReportParameter("ContractNumber", contract.ContractNumber);
+            param[1] = new ReportParameter("ContractDate", contract.ContractDate.ToString("dd/MM/yyyy"));
+            param[2] = new ReportParameter("MadeAt", contract.MadeAt);
+            param[3] = new ReportParameter("OwnerName", contract.OwnerName);
+            param[4] = new ReportParameter("OwnerAddress", contract.OwnerAddress);
+            param[5] = new ReportParameter("OwnerTel", contract.OwnerTel);
+            param[6] = new ReportParameter("ContractorName", contract.ContractorName);
+            param[7] = new ReportParameter("ContractorAddress", contract.ContractorAddress);
+            param[8] = new ReportParameter("ContractorTel", contract.ContractorTel);
+            param[9] = new ReportParameter("DescriptionOfWork", contract.DescriptionOfWork);
+            param[10] = new ReportParameter("WorkSite", contract.WorkSite);
+            param[11] = new ReportParameter("ContractValue", String.Format("{0:n}", contract.ContractValue));
+            param[12] = new ReportParameter("SumPercent", String.Format("{0:n}", wdPercent));
+            param[13] = new ReportParameter("SumTotal", String.Format("{0:n}", wdTotal));
+            param[14] = new ReportParameter("CreatorName", creator.FullName);
+            param[15] = new ReportParameter("OwnerNumber", contract.OwnerNumber);
+            param[16] = new ReportParameter("ContractorLicenseNumber", contract.ContractorLicenseNumber);
+
+            report.DataSources.Clear();
+            report.DataSources.Add(new ReportDataSource("Description", descript));
+            report.DataSources.Add(new ReportDataSource("WithDraw", withdraw));
+            report.SetParameters(param);
+
+            byte[] bytes = report.Render("PDF");
+
+            return File(bytes, "application/pdf", string.Format("{0}.pdf",contract.ContractNumber));
         }
     }
 } 

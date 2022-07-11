@@ -32,7 +32,8 @@
             }
 
             $("#btn-print").click(function () {
-                PrintFromHTML();
+                $("#btn-search").click();
+                $("#form-search").submit();
             });
         });
         function currency(number) {
@@ -86,13 +87,12 @@
         }
     </script>
 }
-
 <section class="wrapper">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-12 pt-8 text-center">
                 <h2>สรุปรายการออกใบเสร็จรับเงิน</h2>
-                <form id="form-search">
+                <form id="form-search" action="@Url.Action("DownloadSummaryPDF","Contract")" method="post" >
                     <div class="pt-2 mb-1 row justify-content-center">
                         <label for="name" class="col-2 col-form-label form-control-sm text-end text-dark">ผู้ว่าจ้าง:</label>
                         <div class="col-sm-5 ">

@@ -201,6 +201,20 @@
     <EntitySet Name="Receipts" EntityType="HomeBuildingModel.Receipt" />
     <EntitySet Name="ReceiptDetails" EntityType="HomeBuildingModel.ReceiptDetail" />
     <EntitySet Name="Withdraws" EntityType="HomeBuildingModel.Withdraw" />
+    <FunctionImport Name="usp_get_contract_description" ReturnType="Collection(HomeBuildingModel.usp_get_contract_description_Result)">
+      <Parameter Name="ContractId" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="usp_get_contract_receipt" ReturnType="Collection(HomeBuildingModel.usp_get_contract_receipt_Result)">
+      <Parameter Name="OwnerName" Mode="In" Type="String" />
+      <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+      <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+    </FunctionImport>
+    <FunctionImport Name="usp_get_contract_withdraw" ReturnType="Collection(HomeBuildingModel.usp_get_contract_withdraw_Result)">
+      <Parameter Name="ContractId" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="usp_get_receipt_history" ReturnType="Collection(HomeBuildingModel.usp_get_receipt_history_Result)">
+      <Parameter Name="ReceiptId" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="GetDocumentNumber_Result">
     <Property Type="String" Name="DocumentNumber" Nullable="true" MaxLength="250" />
@@ -289,4 +303,92 @@
     <Property Name="DeletedById" Type="Guid" />
     <Property Name="DeletedDate" Type="DateTime" Precision="3" />
   </EntityType>
+  <ComplexType Name="usp_get_contract_description_Result">
+    <Property Type="Guid" Name="Id" Nullable="false" />
+    <Property Type="Guid" Name="ConstructionContractId" Nullable="false" />
+    <Property Type="Int32" Name="LineNo" Nullable="false" />
+    <Property Type="String" Name="Detail" Nullable="true" MaxLength="1000" />
+    <Property Type="String" Name="Quantity" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Unit" Nullable="true" MaxLength="250" />
+    <Property Type="String" Name="UnitPrice" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+    <Property Type="Int32" Name="Sequence" Nullable="false" />
+    <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+    <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+    <Property Type="Guid" Name="CreatedById" Nullable="true" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+    <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="DeletedById" Nullable="true" />
+    <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="usp_get_contract_receipt_Result">
+    <Property Type="Guid" Name="Id" Nullable="false" />
+    <Property Type="String" Name="ContractNumber" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="ContractDate" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="MadeAt" Nullable="true" MaxLength="1000" />
+    <Property Type="String" Name="OwnerName" Nullable="true" MaxLength="250" />
+    <Property Type="String" Name="OwnerAddress" Nullable="true" MaxLength="1000" />
+    <Property Type="String" Name="OwnerTel" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="OwnerNumber" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="ContractorName" Nullable="true" MaxLength="250" />
+    <Property Type="String" Name="ContractorAddress" Nullable="true" MaxLength="1000" />
+    <Property Type="String" Name="ContractorTel" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="ContractorLicenseNumber" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="DescriptionOfWork" Nullable="true" MaxLength="2000" />
+    <Property Type="String" Name="WorkSite" Nullable="true" MaxLength="1000" />
+    <Property Type="String" Name="ContractValue" Nullable="true" MaxLength="4000" />
+    <Property Type="Guid" Name="ReceiptId" Nullable="true" />
+    <Property Type="Int32" Name="Round" Nullable="true" />
+    <Property Type="String" Name="ReceiptNumber" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="ReceiptDate" Nullable="true" Precision="23" />
+    <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+    <Property Type="Int32" Name="Sequence" Nullable="false" />
+    <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+    <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+    <Property Type="Guid" Name="CreatedById" Nullable="true" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+    <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="DeletedById" Nullable="true" />
+    <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="usp_get_contract_withdraw_Result">
+    <Property Type="Guid" Name="Id" Nullable="false" />
+    <Property Type="Guid" Name="ConstructionContractId" Nullable="false" />
+    <Property Type="Int32" Name="LineNo" Nullable="false" />
+    <Property Type="String" Name="Detail" Nullable="true" MaxLength="1000" />
+    <Property Type="String" Name="Percent" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+    <Property Type="Int32" Name="Sequence" Nullable="false" />
+    <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+    <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+    <Property Type="Guid" Name="CreatedById" Nullable="true" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+    <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="DeletedById" Nullable="true" />
+    <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="usp_get_receipt_history_Result">
+    <Property Type="Guid" Name="Id" Nullable="false" />
+    <Property Type="Guid" Name="ConstructionContractId" Nullable="false" />
+    <Property Type="Int32" Name="Round" Nullable="true" />
+    <Property Type="String" Name="ReceiptNumber" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="ReceiptDate" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Total" Nullable="true" MaxLength="4000" />
+    <Property Type="String" Name="Description" Nullable="true" MaxLength="250" />
+    <Property Type="Int32" Name="Sequence" Nullable="false" />
+    <Property Type="Boolean" Name="IsEnabled" Nullable="false" />
+    <Property Type="Boolean" Name="IsDeleted" Nullable="false" />
+    <Property Type="Guid" Name="CreatedById" Nullable="true" />
+    <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="UpdatedById" Nullable="true" />
+    <Property Type="DateTime" Name="UpdatedDate" Nullable="false" Precision="23" />
+    <Property Type="Guid" Name="DeletedById" Nullable="true" />
+    <Property Type="DateTime" Name="DeletedDate" Nullable="true" Precision="23" />
+  </ComplexType>
 </Schema>
